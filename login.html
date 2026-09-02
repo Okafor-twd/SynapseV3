@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://twemoji.maxcdn.com https://fonts.googleapis.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' https://twemoji.maxcdn.com data:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;">
+    <title>Synapse X</title>
+    <link rel="stylesheet" href="assets/styles/fonts.css">
+    <link rel="stylesheet" href="assets/styles/hollywood-base.css">
+    <link id="theme-style" rel="stylesheet" href="assets/styles/prebuilt/_prebuilt-hollywood-dark.css">
+    <style>
+        html, body {
+            margin: 0; padding: 0;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #gateway-page {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-image: url("assets/loginbgs/day.jpg");
+        }
+
+        #logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            width: 25%;
+        }
+
+        #logo {
+            width: 66%;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+
+        #extra {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Circular progress spinner */
+        .progress-ring {
+            width: 2rem;
+            height: 2rem;
+            animation: rotate 1.4s linear infinite;
+        }
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: butt;
+            stroke-dasharray: 120 276;
+            stroke-dashoffset: 0;
+            animation: dash 1.4s ease-in-out infinite;
+        }
+        .progress-ring .trail { stroke: rgba(0,0,0,0.3); stroke-dasharray: 276 276; }
+        .progress-ring .path  { stroke: white; }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes dash {
+            0%   { stroke-dasharray: 10 276; stroke-dashoffset: 0; }
+            50%  { stroke-dasharray: 200 276; stroke-dashoffset: -40; }
+            100% { stroke-dasharray: 200 276; stroke-dashoffset: -220; }
+        }
+
+        #subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+            font-family: system-ui, sans-serif;
+            letter-spacing: 0.04em;
+        }
+    </style>
+</head>
+<body>
+    <div id="gateway-page">
+        <div id="logo-container">
+            <img id="logo" src="assets/logo_white.svg" alt="Synapse X">
+            <div id="extra">
+                <svg class="progress-ring" viewBox="0 0 100 100">
+                    <circle class="trail" cx="50" cy="50" r="44"/>
+                    <circle class="path"  cx="50" cy="50" r="44" transform="rotate(-90 50 50)"/>
+                </svg>
+                <div id="subtitle"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dynamically load active theme so theme overrides (#gateway-page, #subtitle::after) apply
+        (async () => {
+            try {
+                const savedTheme = await window.hwAPI?.getSetting('theme', 'hollywood-dark');
+                if (savedTheme) {
+                    const themeData = await window.hwAPI?.loadTheme(savedTheme);
+                    const themeLink = document.getElementById('theme-style');
+                    if (themeLink) {
+                        if (themeData && themeData.cssPath) {
+                            themeLink.href = themeData.cssPath;
+                        } else {
+                            themeLink.href = `assets/styles/prebuilt/_prebuilt-${savedTheme}.css`;
+                        }
+                    }
+                }
+            } catch (_) {}
+        })();
+
+        // Transition to main window after 3 seconds
+        setTimeout(() => {
+            window.hwAPI.loginComplete();
+        }, 3000);
+    </script>
+</body>
+</html>

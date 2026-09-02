@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: file: ws: wss: https:; img-src 'self' data: blob: file: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https: file:; font-src 'self' data: https: file:;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse X v3.0</title>
+    <link rel="stylesheet" href="assets/styles/fonts.css">
+    <link rel="stylesheet" href="assets/styles/hollywood-base.css">
+    <style>
+        #titlebar-logo {
+            background-image: url('assets/logo_white.svg');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: contain;
+        }
+    </style>
+    <link id="theme-style" rel="stylesheet" href="assets/styles/prebuilt/_prebuilt-hollywood-dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
+</head>
+<body class="bg-transparent h-screen w-screen overflow-hidden select-none bg-cover bg-center">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

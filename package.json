@@ -1,0 +1,88 @@
+{
+    "name": "synapse-x",
+    "productName": "Synapse X",
+    "version": "1.0.0",
+    "description": "Synapse X v3",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "vite",
+        "build": "vite build && node copy-assets.js",
+        "start": "electron .",
+        "dist": "npm run build && electron-builder"
+    },
+    "build": {
+        "appId": "com.synapse.v3",
+        "productName": "Synapse X",
+        "directories": {
+            "output": "release"
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "portable",
+                    "arch": ["x64"]
+                },
+                {
+                    "target": "dir",
+                    "arch": ["x64"]
+                }
+            ],
+            "icon": "assets/tray.ico"
+        },
+        "files": [
+            "dist/**/*",
+            "assets/**/*",
+            "config/**/*",
+            "console/**/*",
+            "lsp/**/*",
+            "scripts/**/*",
+            "themes/**/*",
+            "index.js",
+            "preload.js",
+            "login.html",
+            "editor.worker.bundle.js",
+            "package.json"
+        ],
+        "extraFiles": [
+            {
+                "from": "lsp",
+                "to": "bin/lsp"
+            },
+            {
+                "from": "lsp",
+                "to": "lsp"
+            },
+            {
+                "from": "themes",
+                "to": "themes"
+            },
+            {
+                "from": "scripts",
+                "to": "scripts"
+            },
+            {
+                "from": "config",
+                "to": "config"
+            }
+        ],
+        "asar": true
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "devDependencies": {
+        "@vitejs/plugin-react": "^6.1.1",
+        "electron": "^44.0.0",
+        "electron-builder": "^26.15.3",
+        "vite": "^8.2.2"
+    },
+    "dependencies": {
+        "electron-store": "^9.0.0",
+        "iconify-icon": "^3.0.2",
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8",
+        "sass": "^1.103.1"
+    }
+}
