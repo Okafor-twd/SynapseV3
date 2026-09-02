@@ -8,7 +8,7 @@ https://github.com/Okafor-twd/SynapseV3/tree/UI
 <br>
 <img width="1105" height="493" alt="image" src="https://github.com/user-attachments/assets/a6497ebd-e8ec-44cc-98af-a7e127753384" />
 
-# Hollywood-Fluent
+# Hollywood-Fluent: [Link](https://github.com/T0V4-Softworks/synv3themes)
 <img width="1105" height="489" alt="image" src="https://github.com/user-attachments/assets/ce7750a8-aa02-49b2-a82e-1ef7c2a52818" />
 <br>
 <img width="1107" height="497" alt="image" src="https://github.com/user-attachments/assets/dc888bf6-1d96-4e98-81bd-66b2f01b9184" />
