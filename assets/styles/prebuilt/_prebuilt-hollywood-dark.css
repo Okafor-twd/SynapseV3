@@ -309,14 +309,14 @@
   border-color: none;
 }
 .editor-view .action-bar {
-  border-color: #292524 !important;
+  border-color: #292524;
 }
 .editor-view .connection-toggle {
-  border-color: #292524 !important;
+  border-color: #292524;
 }
 .editor-view .tabs-container {
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
-  border-color: #292524 !important;
+  border-color: #292524;
   z-index: 1;
 }
 .editor-view .tabs-container::-webkit-scrollbar {
@@ -354,7 +354,7 @@
 
 .sidebar {
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-  border-color: #292524 !important;
+  border-color: #292524;
   z-index: 1;
 }
 

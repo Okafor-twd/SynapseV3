@@ -208,21 +208,45 @@ function compileCustomThemeScss(themeDir, themeId) {
 
         const raw = fs.readFileSync(scssPath, 'utf8');
         const fill = getHollywoodFill();
-        const source = raw.replace('@use "reset" as *;', '').replace('//@STITCH', fill);
+        const source = raw.replace(/@use\s*['"]reset['"]\s*as\s*\*;\s*/g, '').replace('//@STITCH', fill);
+
+        const loadPaths = [
+            path.join(__dirname, 'assets', 'styles'),
+            path.join(appDir, 'assets', 'styles'),
+            themeDir
+        ].filter(p => fs.existsSync(p));
 
         const result = sass.compileString(source, {
-            loadPaths: [
-                path.join(__dirname, 'assets', 'styles'),
-                themeDir
-            ],
+            loadPaths,
             quietDeps: true,
         });
 
         let css = result.css;
-        // Transparent chrome for the main frameless window only. Do not match
-        // #console-body (the naive /body\s*\{/ regex would rewrite that rule).
-        css = css.replace(/(^|[\s,{])html,\s*body\s*\{[^}]*\}/g, '$1html, body {\n  color: #fafaf9;\n  background: transparent !important;\n}');
-        css = css.replace(/(^|[\s,{])body\s*\{[^}]*\}/g, '$1body {\n  color: #fafaf9;\n  background: transparent !important;\n}');
+        // Map html, body styling to #application so the theme's background ($hw-bg, e.g. #303841)
+        // is always applied to the root application container, while keeping html/body
+        // transparent for frameless/transparency support.
+        css = css.replace(/(^|[\s,{])html,\s*body\s*\{([^}]*)\}/g, (match, prefix, rules) => {
+            return `${prefix}html, body {\n  background: transparent !important;\n}\n#application {\n${rules}\n}`;
+        });
+        css = css.replace(/(^|[\s,{])body\s*\{([^}]*)\}/g, (match, prefix, rules) => {
+            if (match.includes('#console-body')) return match;
+            return `${prefix}#application {\n${rules}\n}`;
+        });
+
+        // Ensure custom sidebar border declarations (e.g. border-left: 1px solid #ffc86a) have !important
+        css = css.replace(/(\.sidebar\s*\{[^}]*?border-(?:left|right)\s*:\s*[^;!]+)(;|\})/g, '$1 !important$2');
+        // Map .action-bar rules to .action-bar, #actions, and .editor-view .action-bar
+        css = css.replace(/(^|[\s,{])\.action-bar(?=[\s,{])/g, '$1.action-bar, $1#actions, $1.editor-view .action-bar');
+        // Map .tabs-container rules to both .tabs-container and .editor-view .tabs-container
+        css = css.replace(/(^|[\s,{])\.tabs-container(?=[\s,{])/g, '$1.tabs-container, $1.editor-view .tabs-container');
+        // Map .action-list button rules to both .action-list button and .action-list .hw-button
+        css = css.replace(/(^|[\s,{])\.action-list\s+button(?=[\s,{])/g, '$1.action-list button, $1.action-list .hw-button');
+
+        // Promote theme-defined border-color rules to !important so they always win
+        css = css.replace(/(\.editor-view\s+\.tabs-container[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
+        css = css.replace(/(\.editor-view\s+\.action-bar[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
+        css = css.replace(/(\.sidebar[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
+        css = css.replace(/(#actions[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
 
         fs.writeFileSync(cssOutPath, css, 'utf8');
         console.log(`[Theme Compiler] Successfully compiled ${themeId} to temp: ${cssOutPath}`);
@@ -310,6 +334,13 @@ function listAllThemes() {
                     } catch (_) {}
                 }
 
+                let cssContent = null;
+                if (cssPath && fs.existsSync(cssPath)) {
+                    try {
+                        cssContent = fs.readFileSync(cssPath, 'utf8');
+                    } catch (_) {}
+                }
+
                 const isCustom = !cssPath || (!cssPath.includes('prebuilt'));
 
                 themes.push({
@@ -319,8 +350,9 @@ function listAllThemes() {
                     meta,
                     icons,
                     editorTheme,
-                    themeDir: path.relative(__dirname, themeDir).replace(/\\/g, '/'),
+                    themeDir: themeDir,
                     cssPath: cssPath ? cssPath.replace(/\\/g, '/') : null,
+                    cssContent,
                     cssExists: !!cssPath,
                     isCustom,
                 });
@@ -343,8 +375,8 @@ function loadThemeMeta(themeId) {
 
     if (found) {
         if (found.isCustom) {
-            const themeDir = path.join(__dirname, found.themeDir);
-            if (fs.existsSync(themeDir)) {
+            const themeDir = found.themeDir;
+            if (themeDir && fs.existsSync(themeDir)) {
                 const files = fs.readdirSync(themeDir);
                 const scssFile = files.find(f => f.endsWith('.scss'));
                 if (scssFile) {
@@ -353,6 +385,19 @@ function loadThemeMeta(themeId) {
                     if (tempCss) {
                         found.cssPath = tempCss.replace(/\\/g, '/');
                         found.cssExists = true;
+                        try {
+                            found.cssContent = fs.readFileSync(tempCss, 'utf8');
+                        } catch (_) {}
+                    }
+                } else {
+                    const cssFile = files.find(f => f.endsWith('.css'));
+                    if (cssFile) {
+                        const directCss = path.join(themeDir, cssFile);
+                        found.cssPath = directCss.replace(/\\/g, '/');
+                        found.cssExists = true;
+                        try {
+                            found.cssContent = fs.readFileSync(directCss, 'utf8');
+                        } catch (_) {}
                     }
                 }
             }

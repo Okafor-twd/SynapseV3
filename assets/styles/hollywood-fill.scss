@@ -554,16 +554,16 @@ $hw-console-contents-background: $hw-bg !default;/*
         border-color: $hw-editor-border-color;
 
         .action-bar {
-            border-color: $hw-border !important;
+            border-color: $hw-border;
         }
 
         .connection-toggle {
-            border-color: $hw-border !important;
+            border-color: $hw-border;
         }
 
         .tabs-container {
             box-shadow: 0 0.25rem 1rem $hw-editor-shadow-color;
-            border-color: $hw-border !important;
+            border-color: $hw-border;
             z-index: 1;
 
             &::-webkit-scrollbar {
@@ -611,7 +611,7 @@ $hw-console-contents-background: $hw-bg !default;/*
 
     .sidebar {
         box-shadow: 0 0 1rem $hw-editor-shadow-color;
-        border-color: $hw-border !important;
+        border-color: $hw-border;
         z-index: 1;
     }
 
@@ -709,6 +709,29 @@ $hw-console-contents-background: $hw-bg !default;/*
 
     #console-body {
         background-color: $hw-bg !important;
+    }
+
+    :root, #application {
+        --hw-bg-deep: #{$hw-bg-deep};
+        --hw-bg: #{$hw-bg};
+        --hw-base: #{$hw-base};
+        --hw-layer1: #{$hw-layer1};
+        --hw-layer2: #{$hw-layer2};
+        --hw-layer3: #{$hw-layer3};
+        --hw-layer4: #{$hw-layer4};
+        --hw-text: #{$hw-text};
+        --hw-text-sub: #{$hw-text-sub};
+        --hw-primary: #{$hw-primary};
+        --hw-border: #{$hw-border};
+
+        --bg: #{$hw-bg};
+        --accent: #{$hw-primary};
+        --text: #{$hw-text};
+    }
+
+    #application, .page-container, .editor-page, .editor-view {
+        color: $hw-text;
+        background-color: $hw-bg;
     }
 
     html, body {

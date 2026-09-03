@@ -206,6 +206,7 @@ class ThemeService {
                     icons: res.icons || {},
                     editorTheme: res.editorTheme || null,
                     cssPath: res.cssPath,
+                    cssContent: res.cssContent,
                     cssAvailable: res.cssExists,
                     isCustom: res.isCustom
                 };
@@ -219,7 +220,8 @@ class ThemeService {
         localStorage.setItem('synapse_setting_theme', meta.id);
         window.hwAPI?.setSetting?.('theme', meta.id);
 
-        // Swap stylesheet link
+        // Swap stylesheet link and custom inline style
+        let customStyleEl = document.getElementById('theme-custom-style');
         let link = document.getElementById('theme-style');
         if (!link) {
             link = document.createElement('link');
@@ -227,13 +229,30 @@ class ThemeService {
             link.rel = 'stylesheet';
             document.head.appendChild(link);
         }
-        if (meta.cssPath) {
-            const formatted = meta.cssPath.replace(/\\/g, '/');
-            link.href = formatted.includes(':') && !formatted.startsWith('file:')
-                ? 'file:///' + formatted
-                : formatted;
+
+        if (meta.cssContent) {
+            if (!customStyleEl) {
+                customStyleEl = document.createElement('style');
+                customStyleEl.id = 'theme-custom-style';
+                document.head.appendChild(customStyleEl);
+            }
+            customStyleEl.textContent = meta.cssContent;
+            // Always move custom style element to the very end of <head> for ultimate cascade priority
+            document.head.appendChild(customStyleEl);
+
+            // Completely disable and remove href from prebuilt link so stale prebuilt stylesheets never conflict
+            if (link) {
+                link.disabled = true;
+                link.removeAttribute('href');
+            }
         } else {
-            link.href = `assets/styles/prebuilt/_prebuilt-${meta.id}.css`;
+            if (customStyleEl) {
+                customStyleEl.textContent = '';
+            }
+            if (link) {
+                link.disabled = false;
+                link.href = `assets/styles/prebuilt/_prebuilt-${meta.id}.css`;
+            }
         }
 
         // Apply metrics

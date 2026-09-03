@@ -141,37 +141,37 @@ export function ActionBar() {
                 <button
                     id="execute-button"
                     disabled={!isConnected}
-                    className={`hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default ${
+                    className={`hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default ${
                         !isConnected ? 'disabled pointer-events-none opacity-50' : ''
                     }`}
                     onClick={handleExecute}
                     title="Execute"
                 >
-                    <iconify-icon icon="fluent:play-20-filled" class="flex items-center justify-center text-base" />
-                    <span className="btn-text text-sm">{i18n.t('button-execute', 'Execute')}</span>
+                    <iconify-icon icon="fluent:play-20-filled" class="flex items-center justify-center" />
+                    <span className="btn-text">{i18n.t('button-execute', 'Execute')}</span>
                 </button>
 
                 {/* Clear */}
                 <button
                     id="clear-button"
-                    className="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default"
+                    className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
                     onClick={handleClear}
                     title="Clear"
                 >
-                    <iconify-icon icon="fluent:eraser-20-filled" class="flex items-center justify-center text-base" />
-                    <span className="btn-text text-sm">{i18n.t('button-clear', 'Clear')}</span>
+                    <iconify-icon icon="fluent:eraser-20-filled" class="flex items-center justify-center" />
+                    <span className="btn-text">{i18n.t('button-clear', 'Clear')}</span>
                 </button>
 
                 {/* Open File */}
                 <div>
                     <button
                         id="openf-button"
-                        className="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default"
+                        className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
                         onClick={handleOpenFile}
                         title="Open File"
                     >
-                        <iconify-icon icon="fluent:document-arrow-up-20-filled" class="flex items-center justify-center text-base" />
-                        <span className="btn-text text-sm">{i18n.t('button-open-file', 'Open')}</span>
+                        <iconify-icon icon="fluent:document-arrow-up-20-filled" class="flex items-center justify-center" />
+                        <span className="btn-text">{i18n.t('button-open-file', 'Open')}</span>
                     </button>
                 </div>
 
@@ -179,25 +179,25 @@ export function ActionBar() {
                 <button
                     id="executef-button"
                     disabled={!isConnected}
-                    className={`hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default ${
+                    className={`hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default ${
                         !isConnected ? 'disabled pointer-events-none opacity-50' : ''
                     }`}
                     onClick={handleExecuteFile}
                     title="Execute File"
                 >
-                    <iconify-icon icon="fluent:settings-20-filled" class="flex items-center justify-center text-base" />
-                    <span className="btn-text text-sm">{i18n.t('button-execute-file', 'Execute')}</span>
+                    <iconify-icon icon="fluent:settings-20-filled" class="flex items-center justify-center" />
+                    <span className="btn-text">{i18n.t('button-execute-file', 'Execute')}</span>
                 </button>
 
                 {/* Save File */}
                 <button
                     id="savef-button"
-                    className="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default"
+                    className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
                     onClick={handleSaveFile}
                     title="Save File"
                 >
-                    <iconify-icon icon="fluent:save-20-filled" class="flex items-center justify-center text-base" />
-                    <span className="btn-text text-sm">{i18n.t('button-save-file', 'Save')}</span>
+                    <iconify-icon icon="fluent:save-20-filled" class="flex items-center justify-center" />
+                    <span className="btn-text">{i18n.t('button-save-file', 'Save')}</span>
                 </button>
             </div>
         </div>

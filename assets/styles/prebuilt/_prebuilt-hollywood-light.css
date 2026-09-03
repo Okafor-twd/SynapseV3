@@ -313,14 +313,14 @@
   border-color: none;
 }
 .editor-view .action-bar {
-  border-color: #78716c !important;
+  border-color: #78716c ;
 }
 .editor-view .connection-toggle {
-  border-color: #78716c !important;
+  border-color: #78716c ;
 }
 .editor-view .tabs-container {
   box-shadow: 0 0.25rem 1rem transparent;
-  border-color: #78716c !important;
+  border-color: #78716c ;
   z-index: 1;
 }
 .editor-view .tabs-container::-webkit-scrollbar {
@@ -358,7 +358,7 @@
 
 .sidebar {
   box-shadow: 0 0 1rem transparent;
-  border-color: #78716c !important;
+  border-color: #78716c ;
   z-index: 1;
 }
 
