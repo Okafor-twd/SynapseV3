@@ -4,7 +4,7 @@ https://github.com/Okafor-twd/SynapseV3/tree/UI
 https://github.com/Okafor-twd/SynapseV3/tree/SynZ
 
 # COMPARISON SCREENSHOTS:
-https://github.com/Okafor-twd/SynapseV3/blob/differences.md
+https://github.com/Okafor-twd/SynapseV3/blob/main/differences.md
 
 # Screenshots:
 <img width="1108" height="503" alt="image" src="https://github.com/user-attachments/assets/0b33adf4-78df-4177-926c-5f8282d18434" />
