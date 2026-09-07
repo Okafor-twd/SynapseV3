@@ -3,15 +3,25 @@ import { useApp } from '../../context/AppContext';
 import { i18n, LANGUAGES } from '../../services/i18nService';
 import { SettingRow } from './controls/SettingRow';
 import { Dropdown } from './controls/Dropdown';
+import changelogFallback from '../../../CHANGELOG.md?raw';
 
 export function AppSettings() {
     const { settings, updateSetting, resetAllSettings, spawnDialog } = useApp();
 
-    const handleShowChangelog = () => {
+    const handleShowChangelog = async () => {
+        let content = changelogFallback;
+        if (window.hwAPI?.getChangelog) {
+            try {
+                const live = await window.hwAPI.getChangelog();
+                if (live && live.trim()) content = live;
+            } catch (_) {}
+        }
+
         spawnDialog({
+            type: 'changelog',
             icon: 'fluent:news-20-filled',
             title: 'Changelog',
-            body: 'Synapse X v3.0 Hollywood — Clean Electron + React Architecture.\n\n• Modular layout\n• Fast Vite compilation\n• Monaco Luau editor\n• Dynamic themes and metrics',
+            body: content,
             buttons: ['Ok']
         });
     };

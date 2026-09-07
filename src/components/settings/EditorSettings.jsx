@@ -28,7 +28,7 @@ export function EditorSettings() {
             >
                 <button
                     className={`hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default ${
-                        settings.editorstyle === '0' ? 'outline outline-2' : ''
+                        String(settings.editorstyle) === '0' ? 'outline outline-2' : ''
                     }`}
                     id="optsel-0-editorstyle"
                     title="Actions on bottom, tabs on top"
@@ -39,7 +39,7 @@ export function EditorSettings() {
                 </button>
                 <button
                     className={`hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-default ${
-                        settings.editorstyle === '1' ? 'outline outline-2' : ''
+                        String(settings.editorstyle) === '1' ? 'outline outline-2' : ''
                     }`}
                     id="optsel-1-editorstyle"
                     title="Actions on top, tabs on bottom"

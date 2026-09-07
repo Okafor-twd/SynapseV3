@@ -28,17 +28,19 @@ function MainLayout() {
 
             {/* Content Area */}
             <div id="content-area" className="relative flex-1 min-h-0 w-full overflow-hidden">
-                <div className={`page-container ${activePage === 'editor' ? 'visible-page' : 'hidden-page'}`}>
-                    <EditorPage />
-                </div>
-                <div className={`page-container ${activePage === 'settings' ? 'visible-page' : 'hidden-page'}`}>
-                    <SettingsPage />
-                </div>
-                <div className={`page-container ${activePage === 'themes' ? 'visible-page' : 'hidden-page'}`}>
-                    <ThemesPage />
-                </div>
-                <div className={`page-container ${activePage === 'plugins' ? 'visible-page' : 'hidden-page'}`}>
-                    <PluginsPage />
+                <div className="w-full relative h-full">
+                    <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'editor' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
+                        <EditorPage />
+                    </div>
+                    <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'settings' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
+                        <SettingsPage />
+                    </div>
+                    <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'themes' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
+                        <ThemesPage />
+                    </div>
+                    <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'plugins' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
+                        <PluginsPage />
+                    </div>
                 </div>
             </div>
 

@@ -25,14 +25,17 @@
 }
 
 /* ─── Module Caption & Chevron Active/Inactive States ─── */
-.editor-sidebar-category .category-caption,
+:where(.editor-sidebar-category .category-caption,
 .editor-sidebar-category .module-caption,
 .tree .category-caption,
 .tree .module-caption,
-.module-caption {
+.module-caption) {
     color: #d8dce5;
     background-color: #353336;
     border-color: #585759;
+}
+
+.module-caption {
     position: sticky;
     top: 0;
     z-index: 10;

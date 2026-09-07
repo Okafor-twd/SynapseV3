@@ -38,7 +38,7 @@ export function SettingsPage() {
                             <div
                                 key={cat.id}
                                 data-page={cat.id}
-                                className={`entry group flex items-center border-b py-2 px-3 transition-colors lg:gap-2 cursor-pointer ${
+                                className={`entry group flex items-center transition-colors cursor-pointer ${
                                     isSelected ? 'select' : ''
                                 }`}
                                 onClick={() => scrollToCategory(cat.id)}

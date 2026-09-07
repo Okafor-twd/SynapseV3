@@ -22,7 +22,7 @@ export function PluginsPage() {
             <div className="hw-multimenu flex h-full max-h-full w-full">
                 {/* Plugins Category Sidebar */}
                 <div className="list z-10 flex flex-col border-r lg:w-1/5 select-none">
-                    <div className="entry group flex items-center border-b py-2 px-3 transition-colors lg:gap-2 select">
+                    <div className="entry group flex items-center transition-colors cursor-pointer select">
                         <iconify-icon
                             icon="heroicons:puzzle-piece-solid"
                             class="flex items-center justify-center text-xl opacity-100"

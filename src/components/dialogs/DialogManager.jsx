@@ -65,6 +65,7 @@ export function DialogManager() {
     };
 
     const isAccentPicker = activeDialog.type === 'accent-picker';
+    const isChangelog = activeDialog.type === 'changelog' || activeDialog.title?.toLowerCase() === 'changelog';
     const dialogIcon = isAccentPicker ? 'fluent:color-20-filled' : activeDialog.icon;
     const dialogIconColor = isAccentPicker ? 'white' : activeDialog.iconColor;
 
@@ -82,7 +83,7 @@ export function DialogManager() {
                 }}
             >
                 <div
-                    className="hw-dialog flex min-w-[24rem] max-w-[28rem] flex-col rounded-lg"
+                    className={`hw-dialog flex ${isChangelog ? 'min-w-[28rem] max-w-[38rem] w-[38rem] hw-changelog' : 'min-w-[24rem] max-w-[28rem]'} flex-col rounded-lg`}
                     style={{
                         animation: closing
                             ? '100ms ease-in 0s 1 normal forwards running elem-blur-out'
@@ -91,7 +92,7 @@ export function DialogManager() {
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Content row */}
-                    <div className="flex grow gap-4 p-4">
+                    <div className="flex grow gap-4 p-4 min-w-0">
                         {dialogIcon && (
                             <iconify-icon
                                 icon={dialogIcon}
@@ -99,10 +100,12 @@ export function DialogManager() {
                                 style={dialogIconColor ? { color: dialogIconColor } : undefined}
                             />
                         )}
-                        <div className="flex h-full flex-col gap-2 flex-grow">
+                        <div className="flex h-full flex-col gap-2 flex-grow min-w-0">
                             <div className="caption align-top text-xl font-bold">{activeDialog.title}</div>
                             {activeDialog.body && (
-                                <div className="text-sm opacity-80 whitespace-pre-wrap">{activeDialog.body}</div>
+                                <div className={`text-sm opacity-90 whitespace-pre-wrap ${isChangelog ? 'changelog-contents max-h-[55vh] overflow-y-auto pr-2 select-text font-sans leading-relaxed' : ''}`}>
+                                    {activeDialog.body}
+                                </div>
                             )}
 
                             {/* Accent Color Palette Picker - exactly like original Hollywood UI */}

@@ -55,6 +55,9 @@ contextBridge.exposeInMainWorld('hwAPI', {
     lspWorkspace: () => ipcRenderer.invoke('lsp:workspace'),
     lspDefDir: () => ipcRenderer.invoke('lsp:defdir'),
 
+    // Changelog
+    getChangelog: () => ipcRenderer.invoke('app:get-changelog'),
+
     // Network text fetch
     fetchUrl: (url) => ipcRenderer.invoke('net:fetch-url', url),
 });

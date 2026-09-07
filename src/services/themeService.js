@@ -195,7 +195,7 @@ class ThemeService {
 
     async loadTheme(themeId) {
         let meta = this.themeMetas[themeId] || Object.values(this.themeMetas).find(m => m.id === themeId || m.folderName === themeId);
-        if (!meta) {
+        if (!meta || !meta.cssContent || meta.isCustom) {
             const res = await window.hwAPI?.loadTheme?.(themeId);
             if (res) {
                 meta = {
@@ -252,6 +252,7 @@ class ThemeService {
             if (link) {
                 link.disabled = false;
                 link.href = `assets/styles/prebuilt/_prebuilt-${meta.id}.css`;
+                document.head.appendChild(link);
             }
         }
 
@@ -287,7 +288,8 @@ class ThemeService {
             mon.editor.setTheme('hc-black');
             return;
         }
-        if (themeId === 'seven' || themeId === 'hollywood-light') {
+        const currentMeta = this.themeMetas[themeId] || Object.values(this.themeMetas).find(m => m.id === themeId || m.folderName === themeId);
+        if (themeId === 'seven' || themeId === 'hollywood-light' || currentMeta?.editor === 'synapse-light' || currentMeta?.editor === 'hollywood-light' || currentMeta?.editor === 'vs') {
             mon.editor.setTheme('vs');
             return;
         }

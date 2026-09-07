@@ -206,8 +206,19 @@ function compileCustomThemeScss(themeDir, themeId) {
             try { fs.unlinkSync(localCompiled); } catch (_) {}
         }
 
-        const raw = fs.readFileSync(scssPath, 'utf8');
-        const fill = getHollywoodFill();
+        let raw = fs.readFileSync(scssPath, 'utf8');
+        // Strip !important from fill's border-color declarations so that theme-defined
+        // border-color !important (e.g. hazy-trip's white/black 3D bevels) always wins.
+        // Without this, fill's .hw-multimenu .list .entry { border-color: $hw-border !important }
+        // at specificity (0,3,0) beats theme's .entry { border-top-color: white !important } at (0,1,0).
+        const fill = getHollywoodFill().replace(/border-color:\s*\$hw-border\s*!important/g, 'border-color: $hw-border');
+
+        // Auto-heal SCSS typos commonly present in custom themes:
+        // 1. Invalid trailing digits after rgb: e.g. rgb(189, 189, 189)3 -> rgb(189, 189, 189)
+        raw = raw.replace(/rgb\(([^)]+)\)\d+/g, 'rgb($1)');
+        // 2. Bare hex values missing #: e.g. $var: ffc86a; -> $var: #ffc86a;
+        raw = raw.replace(/(\$[a-zA-Z0-9_-]+\s*:\s*)([0-9a-fA-F]{6}|[0-9a-fA-F]{3})(\s*;)/g, '$1#$2$3');
+
         const source = raw.replace(/@use\s*['"]reset['"]\s*as\s*\*;\s*/g, '').replace('//@STITCH', fill);
 
         const loadPaths = [
@@ -219,19 +230,48 @@ function compileCustomThemeScss(themeDir, themeId) {
         const result = sass.compileString(source, {
             loadPaths,
             quietDeps: true,
+            functions: {
+                'asset($name)': function(args) {
+                    const assetRel = args[0].assertString('name').text;
+                    const assetPath = path.resolve(themeDir, assetRel);
+                    if (fs.existsSync(assetPath)) {
+                        const ext = path.extname(assetPath).toLowerCase();
+                        const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.svg' ? 'image/svg+xml' : ext === '.otf' ? 'font/otf' : ext === '.ttf' ? 'font/ttf' : ext === '.woff2' ? 'font/woff2' : 'application/octet-stream';
+                        const b64 = fs.readFileSync(assetPath).toString('base64');
+                        return new sass.SassString(`url("data:${mime};base64,${b64}")`, { quotes: false });
+                    }
+                    return new sass.SassString(`url("${assetRel}")`, { quotes: false });
+                }
+            }
         });
 
         let css = result.css;
+
+        // In case any asset(...) was not parsed by Sass:
+        css = css.replace(/asset\(\s*['"]?([^'")]+)['"]?\s*\)/g, (match, assetRel) => {
+            const assetPath = path.resolve(themeDir, assetRel);
+            if (fs.existsSync(assetPath)) {
+                const ext = path.extname(assetPath).toLowerCase();
+                const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.svg' ? 'image/svg+xml' : ext === '.otf' ? 'font/otf' : ext === '.ttf' ? 'font/ttf' : ext === '.woff2' ? 'font/woff2' : 'application/octet-stream';
+                const b64 = fs.readFileSync(assetPath).toString('base64');
+                return `url("data:${mime};base64,${b64}")`;
+            }
+            return `url("${assetRel}")`;
+        });
+
         // Map html, body styling to #application so the theme's background ($hw-bg, e.g. #303841)
         // is always applied to the root application container, while keeping html/body
         // transparent for frameless/transparency support.
         css = css.replace(/(^|[\s,{])html,\s*body\s*\{([^}]*)\}/g, (match, prefix, rules) => {
             return `${prefix}html, body {\n  background: transparent !important;\n}\n#application {\n${rules}\n}`;
         });
-        css = css.replace(/(^|[\s,{])body\s*\{([^}]*)\}/g, (match, prefix, rules) => {
-            if (match.includes('#console-body')) return match;
-            return `${prefix}#application {\n${rules}\n}`;
+        css = css.replace(/(?<!,\s*)(?<![\w-])body\s*\{([^}]*)\}/g, (match, rules) => {
+            if (rules.includes('#console-body')) return match;
+            return `#application {\n${rules}\n}`;
         });
+
+        // Propagate application background to layout containers and settings pages
+        css = css.replace(/(^|[\s,{])#application,\s*\.page-container,\s*\.editor-page,\s*\.editor-view(?=[\s,{])/g, '$1#application, $1.page-container, $1.editor-page, $1.editor-view, $1.main-container, $1#content-area, $1#settings-pages');
 
         // Ensure custom sidebar border declarations (e.g. border-left: 1px solid #ffc86a) have !important
         css = css.replace(/(\.sidebar\s*\{[^}]*?border-(?:left|right)\s*:\s*[^;!]+)(;|\})/g, '$1 !important$2');
@@ -242,11 +282,21 @@ function compileCustomThemeScss(themeDir, themeId) {
         // Map .action-list button rules to both .action-list button and .action-list .hw-button
         css = css.replace(/(^|[\s,{])\.action-list\s+button(?=[\s,{])/g, '$1.action-list button, $1.action-list .hw-button');
 
+        // Map root-level .entry rules to .hw-multimenu .list .entry so theme's 3D beveled borders win
+        css = css.replace(/(^|[\n}])\s*\.entry\s*\{/g, '$1\n.entry, .hw-multimenu .list .entry {');
+        css = css.replace(/(^|[\n}])\s*\.entry:active\s*\{/g, '$1\n.entry:active, .hw-multimenu .list .entry:active {');
+
         // Promote theme-defined border-color rules to !important so they always win
         css = css.replace(/(\.editor-view\s+\.tabs-container[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
         css = css.replace(/(\.editor-view\s+\.action-bar[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
         css = css.replace(/(\.sidebar[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
         css = css.replace(/(#actions[^{]*\{[^}]*?border-color:\s*[^;!]+)(;|\})/g, '$1 !important$2');
+
+        const bgMatch = raw.match(/\$hw-bg\s*:\s*([^;!]+)/);
+        if (bgMatch) {
+            const bgVal = bgMatch[1].trim();
+            css += `\n#application, :root { --hw-bg: ${bgVal}; background-color: ${bgVal} !important; }\n`;
+        }
 
         fs.writeFileSync(cssOutPath, css, 'utf8');
         console.log(`[Theme Compiler] Successfully compiled ${themeId} to temp: ${cssOutPath}`);
@@ -861,6 +911,24 @@ ipcMain.on('window:set-always-on-top', (e, flag) => {
 
 ipcMain.on('shell:open-path', (e, filePath) => {
     shell.openPath(filePath);
+});
+
+// Changelog reader
+ipcMain.handle('app:get-changelog', async () => {
+    const changelogPaths = [
+        path.join(appDir, 'CHANGELOG.md'),
+        path.join(__dirname, 'CHANGELOG.md'),
+        path.join(appDir, 'changelog.md'),
+        path.join(__dirname, 'changelog.md')
+    ];
+    for (const p of changelogPaths) {
+        if (fs.existsSync(p)) {
+            try {
+                return fs.readFileSync(p, 'utf8');
+            } catch (_) {}
+        }
+    }
+    return '';
 });
 
 // Network Raw Text Fetch (for bookmarks / gists without CORS/CSP restrictions)

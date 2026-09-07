@@ -134,14 +134,14 @@ export function ActionBar() {
 
             {/* Action Buttons */}
             <div
-                className="action-list flex items-center gap-1"
+                className="action-list flex items-center"
                 style={isAlignLeft ? { order: 0, marginLeft: '0px', marginRight: 'auto' } : { order: 10, marginLeft: 'auto', marginRight: '0px' }}
             >
                 {/* Execute */}
                 <button
                     id="execute-button"
                     disabled={!isConnected}
-                    className={`hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default ${
+                    className={`hw-button relative flex select-none items-center justify-center rounded-md cursor-default ${
                         !isConnected ? 'disabled pointer-events-none opacity-50' : ''
                     }`}
                     onClick={handleExecute}
@@ -154,7 +154,7 @@ export function ActionBar() {
                 {/* Clear */}
                 <button
                     id="clear-button"
-                    className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
+                    className="hw-button relative flex select-none items-center justify-center rounded-md cursor-default"
                     onClick={handleClear}
                     title="Clear"
                 >
@@ -166,7 +166,7 @@ export function ActionBar() {
                 <div>
                     <button
                         id="openf-button"
-                        className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
+                        className="hw-button relative flex select-none items-center justify-center rounded-md cursor-default"
                         onClick={handleOpenFile}
                         title="Open File"
                     >
@@ -179,7 +179,7 @@ export function ActionBar() {
                 <button
                     id="executef-button"
                     disabled={!isConnected}
-                    className={`hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default ${
+                    className={`hw-button relative flex select-none items-center justify-center rounded-md cursor-default ${
                         !isConnected ? 'disabled pointer-events-none opacity-50' : ''
                     }`}
                     onClick={handleExecuteFile}
@@ -192,7 +192,7 @@ export function ActionBar() {
                 {/* Save File */}
                 <button
                     id="savef-button"
-                    className="hw-button relative flex select-none items-center justify-center gap-1 h-8 px-2.5 cursor-default"
+                    className="hw-button relative flex select-none items-center justify-center rounded-md cursor-default"
                     onClick={handleSaveFile}
                     title="Save File"
                 >

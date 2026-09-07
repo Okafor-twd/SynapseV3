@@ -14,7 +14,7 @@ html, body {
     height: 100vh;
     position: relative;
     overflow: hidden;
-    background: var(--hw-bg, transparent);
+    background-color: var(--hw-bg, transparent);
     color: var(--hw-text, inherit);
 }
 
@@ -70,7 +70,6 @@ html, body {
 /* ─── General Controls ─── */
 .hw-button {
     position: relative;
-    overflow: hidden;
     box-sizing: border-box;
 }
 

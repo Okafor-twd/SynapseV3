@@ -27,7 +27,15 @@ export function NavigationBar() {
                     id="classic-nav-backdrop"
                     className={classicMenuOpen ? 'open' : ''}
                     onClick={() => setClassicMenuOpen(false)}
-                />
+                >
+                    <div
+                        className="classic-nav-blur-panel"
+                        style={{
+                            backdropFilter: 'blur(20px) saturate(140%)',
+                            WebkitBackdropFilter: 'blur(20px) saturate(140%)',
+                        }}
+                    />
+                </div>
             )}
 
             {/* Navigation Bar */}
