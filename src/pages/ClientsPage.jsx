@@ -211,8 +211,14 @@ export function ClientsPage() {
                     <div className="pages flex flex-1 grow h-full flex-col overflow-y-auto">
                         {sessions.length === 0 ? (
                             <div className="flex flex-1 grow h-full w-full flex-col items-center justify-center gap-3 opacity-40 select-none text-center m-auto p-4">
-                                <iconify-icon icon="fluent:desktop-20-filled" class="text-6xl" />
-                                <span className="text-base font-medium">
+                                <iconify-icon
+                                    icon="fluent:desktop-20-filled"
+                                    width="64"
+                                    height="64"
+                                    style={{ fontSize: '64px', width: '64px', height: '64px' }}
+                                    class="flex items-center justify-center"
+                                />
+                                <span className="text-base font-medium" style={{ fontSize: '1rem', marginTop: '0.25rem' }}>
                                     {i18n.t('clients-no-clients', 'No Clients Connected.')}
                                 </span>
                             </div>
