@@ -363,7 +363,7 @@
         "clients-session-added": "Session Added",
         "clients-session-removed": "Session Removed",
         "clients-session-prefix": "Session: ",
-        "clients-no-clients": "No clients connected.",
+        "clients-no-clients": "No Clients Connected.",
         "clients-exec-this": "Execute for this session",
         "clients-exec-this-desc": "When enabled, scripts will execute on this specific session.",
         "clients-exec-all": "Execute for all sessions",

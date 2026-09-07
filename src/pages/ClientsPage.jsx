@@ -153,7 +153,7 @@ export function ClientsPage() {
                 </div>
 
                 {/* Main content */}
-                <div className="flex max-h-full grow flex-col">
+                <div className="flex h-full max-h-full grow flex-col">
 
                     {/* Controls bar */}
                     <div className="flex flex-shrink-0 items-center gap-3 px-3 py-2 border-b">
@@ -207,18 +207,18 @@ export function ClientsPage() {
                         </div>
                     </div>
 
-                    {/* Session cards */}
-                    <div className="pages flex grow flex-col overflow-y-auto">
-                        <div className="page flex flex-col gap-2 p-3">
-                            {sessions.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center h-full min-h-[12rem] gap-3 opacity-40 select-none">
-                                    <iconify-icon icon="fluent:desktop-20-filled" class="text-4xl" />
-                                    <span className="text-sm">
-                                        {i18n.t('clients-no-clients', 'No clients connected.')}
-                                    </span>
-                                </div>
-                            ) : (
-                                sessions.map(session => (
+                    {/* Session cards or Centered Empty State */}
+                    <div className="pages flex flex-1 grow h-full flex-col overflow-y-auto">
+                        {sessions.length === 0 ? (
+                            <div className="flex flex-1 grow h-full w-full flex-col items-center justify-center gap-3 opacity-40 select-none text-center m-auto p-4">
+                                <iconify-icon icon="fluent:desktop-20-filled" class="text-6xl" />
+                                <span className="text-base font-medium">
+                                    {i18n.t('clients-no-clients', 'No Clients Connected.')}
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="page flex flex-col gap-2 p-3">
+                                {sessions.map(session => (
                                     <ClientCard
                                         key={session.pid}
                                         session={session}
@@ -226,9 +226,9 @@ export function ClientsPage() {
                                         filterPid={filterPid}
                                         onToggleExec={handleToggleExec}
                                     />
-                                ))
-                            )}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                 </div>
