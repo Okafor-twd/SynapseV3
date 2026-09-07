@@ -1039,13 +1039,6 @@ ipcMain.on('console:flush', (e) => {
 // ── Synapse Z Integration (V1 & V2 RS API) ──────────────────────────────────
 let isSynzAttached = false;
 
-function getSetting(key, fallback) {
-    const val = require('./settings').get?.(key);
-    if (val !== undefined && val !== null) return val;
-    // Fallback: read from a simple JSON store if available, otherwise return fallback
-    return fallback;
-}
-
 function sendToRenderer(channel, ...args) {
     if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(channel, ...args);
@@ -1062,16 +1055,7 @@ function updateAttachStatus() {
 }
 
 function isSessionNotificationsEnabled() {
-    // Read from localStorage-backed setting persisted via settings:set IPC
-    try {
-        const store = require('electron').app ? null : null; // resolved at runtime
-        // The setting is persisted via window.hwAPI.setSetting → 'settings:set' → stored in userData
-        // We access it via the same store that handles 'settings:get' IPC
-        const val = globalSettings?.session_notifications;
-        return val !== false;
-    } catch (_) {
-        return true;
-    }
+    return globalSettings.session_notifications !== false;
 }
 
 // Track session_notifications setting from renderer via IPC
