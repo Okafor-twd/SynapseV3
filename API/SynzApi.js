@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const net = require("node:net");
 const child_process = require("node:child_process");
+const { SynapseConsole, SynapseConsoleManager, OUTPUT_TYPES } = require("./Console.js");
 
 // Native Addon fallback
 let SynzNativeApi = null;
@@ -71,64 +72,21 @@ function writeSynzSettings(settings) {
     }
 }
 
-const CONSOLE_READERS = new Map(); // pid -> ChildProcess
+const CONSOLE_MANAGER = new SynapseConsoleManager();
+CONSOLE_MANAGER.onOutput((pid, type, content) => {
+    SynapseZAPI2.triggerSessionOutput(pid, type, content);
+});
 
 function startConsoleReader(pid) {
-    const numPid = Number(pid);
-    if (!numPid || CONSOLE_READERS.has(numPid)) return;
-
-    const exePath = path.join(__dirname, "synz_console_reader.exe");
-    if (!fs.existsSync(exePath)) return;
-
-    try {
-        const child = child_process.spawn(exePath, [String(numPid)], {
-            windowsHide: true,
-            stdio: ["ignore", "pipe", "ignore"],
-        });
-
-        let buffer = "";
-        child.stdout.on("data", (chunk) => {
-            buffer += chunk.toString("utf8");
-            let newlineIdx;
-            while ((newlineIdx = buffer.indexOf("\n")) !== -1) {
-                const line = buffer.slice(0, newlineIdx).trim();
-                buffer = buffer.slice(newlineIdx + 1);
-                if (line) {
-                    try {
-                        const msg = JSON.parse(line);
-                        if (msg && typeof msg.content === "string") {
-                            SynapseZAPI2.triggerSessionOutput(msg.pid, msg.type, msg.content);
-                        }
-                    } catch (_) {}
-                }
-            }
-        });
-
-        child.on("exit", () => {
-            CONSOLE_READERS.delete(numPid);
-        });
-        child.on("error", () => {
-            CONSOLE_READERS.delete(numPid);
-        });
-
-        CONSOLE_READERS.set(numPid, child);
-    } catch (_) {}
+    CONSOLE_MANAGER.startForSession(pid);
 }
 
 function stopConsoleReader(pid) {
-    const numPid = Number(pid);
-    const child = CONSOLE_READERS.get(numPid);
-    if (child) {
-        try { child.kill(); } catch (_) {}
-        CONSOLE_READERS.delete(numPid);
-    }
+    CONSOLE_MANAGER.stopForSession(pid);
 }
 
 function stopAllConsoleReaders() {
-    for (const [pid, child] of CONSOLE_READERS.entries()) {
-        try { child.kill(); } catch (_) {}
-    }
-    CONSOLE_READERS.clear();
+    CONSOLE_MANAGER.stopAll();
 }
 
 function updateConsoleRedirectionState(enabled) {
@@ -725,6 +683,9 @@ class SynapseZAPI2 {
     static setSetting(k, v) { return setSynzSetting(k, v); }
     static startConsoleReader(pid) { return startConsoleReader(pid); }
     static stopConsoleReader(pid) { return stopConsoleReader(pid); }
+    static get SynapseConsole() { return SynapseConsole; }
+    static get Console() { return SynapseConsole; }
+    static get consoleManager() { return CONSOLE_MANAGER; }
 }
 
 // ── V1 Static Class Container (SynapseZAPI) ──────────────────────────────────
@@ -799,6 +760,8 @@ module.exports = {
     SynapseSession,
     SynapseZAPI2,
     SynzApi2: SynapseZAPI2,
+    SynapseConsole,
+    SynapseConsoleManager,
 
     // Synapse Z settings
     readSynzSettings,
