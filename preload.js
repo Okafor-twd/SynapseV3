@@ -31,6 +31,7 @@ contextBridge.exposeInMainWorld('hwAPI', {
     execute: (source) => ipcRenderer.send('editor:execute', source),
     onExecuted: (cb) => ipcRenderer.on('editor:executed', cb),
     openFile: () => ipcRenderer.invoke('dialog:open-file'),
+    openFileDialog: () => ipcRenderer.invoke('dialog:open-file'),
     saveFile: (content, existingPath) => ipcRenderer.invoke('dialog:save-file', content, existingPath),
 
     // Synapse Z Client Attachment & Instances

@@ -27,8 +27,22 @@ export function ActionBar() {
     }, []);
 
     const handleExecute = () => {
-        if (!activeTab) return;
-        const code = activeTab.content || '';
+        let code = '';
+        if (monacoEditorRef?.current) {
+            try {
+                const val = monacoEditorRef.current.getValue();
+                if (typeof val === 'string' && val.length > 0) {
+                    code = val;
+                }
+            } catch (_) {}
+        }
+        if (!code && activeTab?.content) {
+            code = activeTab.content;
+        }
+        if (!code) {
+            code = localStorage.getItem('synapse_setting_default_tab_content') || "print('Synapse winning!')";
+        }
+        if (!code || !code.trim()) return;
         window.hwAPI?.execute?.(code);
     };
 
@@ -50,17 +64,19 @@ export function ActionBar() {
     };
 
     const handleOpenFile = async () => {
-        const file = await window.hwAPI?.openFileDialog?.();
+        const openFn = window.hwAPI?.openFileDialog || window.hwAPI?.openFile;
+        const file = await openFn?.();
         if (file && file.name) {
             openFileInEditor(file.name, file.content, { filePath: file.path, isFile: true });
         }
     };
 
     const handleExecuteFile = async () => {
-        const file = await window.hwAPI?.openFileDialog?.();
-        if (file && file.name) {
+        const openFn = window.hwAPI?.openFileDialog || window.hwAPI?.openFile;
+        const file = await openFn?.();
+        if (file && file.content && file.content.trim()) {
             window.hwAPI?.openConsole?.();
-            window.hwAPI?.execute?.(file.content || '');
+            window.hwAPI?.execute?.(file.content);
         }
     };
 

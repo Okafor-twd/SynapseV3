@@ -1166,7 +1166,11 @@ ipcMain.handle('client:get-sessions', () => {
 
 // Editor
 ipcMain.on('editor:execute', (e, source) => {
-    const scriptText = String(source || '');
+    const scriptText = String(source || '').trim();
+    if (!scriptText) {
+        console.log('[editor:execute] ignoring blank script');
+        return;
+    }
     const scriptLen = scriptText.length;
     console.log(`[editor:execute] executing ${scriptLen} bytes via Synapse Z API`);
 

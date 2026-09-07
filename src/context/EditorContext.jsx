@@ -9,6 +9,7 @@ let tabIdCounter = 0;
 export function EditorProvider({ children }) {
     const { spawnDialog } = useApp();
     const [tabs, setTabs] = useState(() => {
+        const defaultContent = localStorage.getItem('synapse_setting_default_tab_content') ?? "print('Synapse winning!')";
         try {
             const saved = localStorage.getItem('synapse_tabs');
             if (saved) {
@@ -16,13 +17,15 @@ export function EditorProvider({ children }) {
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     parsed.forEach(t => {
                         if (t.id > tabIdCounter) tabIdCounter = t.id;
+                        if (!t.content || !String(t.content).trim()) {
+                            t.content = defaultContent;
+                        }
                     });
                     return parsed;
                 }
             }
         } catch (_) {}
         tabIdCounter = 1;
-        const defaultContent = localStorage.getItem('synapse_setting_default_tab_content') ?? "print('Synapse winning!')";
         return [{
             id: 1,
             title: 'Untitled tab',
@@ -258,9 +261,20 @@ export function EditorProvider({ children }) {
             case 'duplicate':
                 createTab((tab.title || 'Untitled tab') + ' (Copy)', tab.content);
                 break;
-            case 'execute':
-                window.hwAPI?.execute?.(tab.content || '');
+            case 'execute': {
+                let code = '';
+                if (tabId === activeTabId && monacoEditorRef.current) {
+                    try {
+                        const val = monacoEditorRef.current.getValue();
+                        if (val && val.length > 0) code = val;
+                    } catch (_) {}
+                }
+                if (!code && tab.content) code = tab.content;
+                if (!code) code = localStorage.getItem('synapse_setting_default_tab_content') || "print('Synapse winning!')";
+                if (!code || !code.trim()) break;
+                window.hwAPI?.execute?.(code);
                 break;
+            }
             case 'format': {
                 const formatted = formatLuaCode(tab.content || '');
                 updateTabContent(tabId, formatted);

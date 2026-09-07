@@ -65,6 +65,9 @@ function GetExecutionPath(PID = 0) {
  * 3 - No access to write file
  */
 function Execute(Script, PID = 0) {
+    if (!Script || !String(Script).trim()) {
+        return 0; // Guard against blank scripts
+    }
     const executionPath = GetExecutionPath(PID);
     if (typeof executionPath === "number") {
         return executionPath;
@@ -86,6 +89,9 @@ function Execute(Script, PID = 0) {
  * 3 - No access to write file
  */
 async function ExecuteAsync(Script, PID = 0) {
+    if (!Script || !String(Script).trim()) {
+        return 0; // Guard against blank scripts
+    }
     const executionPath = GetExecutionPath(PID);
     if (typeof executionPath === "number") {
         return executionPath;
@@ -347,16 +353,11 @@ function IsSynz(PID) {
         return true;
     }
 
-    // 2. Check if .grh signature is present in the executable
+    // 2. Check if .grh signature is present in the specific process executable
     const processes = GetRobloxProcesses();
     const proc = processes.find(p => Number(p.pid) === numPid);
     if (proc && proc.path && fs.existsSync(proc.path)) {
         if (isSynzPath(proc.path)) return true;
-    }
-
-    const exePaths = findRobloxExePaths();
-    for (const ep of exePaths) {
-        if (isSynzPath(ep)) return true;
     }
 
     return false;
@@ -384,24 +385,16 @@ function AreAllInstancesSynz() {
     return true;
 }
 
-// ── V2 Named Pipes Session Architecture (SynapseSession) ─────────────────────
+// ── V2 Session Architecture (SynapseSession) ─────────────────────────────────
 
 class SynapseSession {
     constructor(pid) {
         this.pid = Number(pid);
-        this.pipeName = "";
+        this.pipeName = `\\\\.\\pipe\\synz-${this.pid}`;
         this.pendingCommandQueue = [];
         this.onMessageCallbacks = [];
-        this.mainSocket = null;
-        this.sessionSocket = null;
-        this.isConnected = false;
+        this.isConnected = true;
         this.destroyed = false;
-        this._loopTimer = null;
-
-        // Internal listener to parse console outputs/errors
-        this.addOnMessageCallback((command, data) => {
-            this._consoleOutputInternal(command, data);
-        });
     }
 
     queueCommand(command) {
@@ -409,7 +402,8 @@ class SynapseSession {
     }
 
     execute(source) {
-        this.queueCommand(`execute ${source}`);
+        if (!source || !String(source).trim()) return 0;
+        return Execute(source, this.pid);
     }
 
     addOnMessageCallback(callback) {
@@ -418,167 +412,13 @@ class SynapseSession {
         }
     }
 
-    /**
-     * Parses incoming pipe messages and dispatches console output events.
-     * RS API output_type values:
-     *   0 = print
-     *   1 = info
-     *   2 = warn
-     *   3 = error
-     *
-     * Pipe message format from Synapse Z:
-     *   "output <output_type> <content>"
-     *   "error <content>"  (always type 3)
-     */
-    _consoleOutputInternal(command, data) {
-        if (command !== "read" || !data) return;
-        const spaceIdx = data.indexOf(" ");
-        if (spaceIdx === -1) return;
-        const cmd = data.slice(0, spaceIdx);
-        const payload = data.slice(spaceIdx + 1);
-
-        if (cmd === "output") {
-            // payload = "<output_type> <content>"
-            const secondSpace = payload.indexOf(" ");
-            if (secondSpace !== -1) {
-                const typeStr = payload.slice(0, secondSpace);
-                const content = payload.slice(secondSpace + 1);
-                // RS API: 0=print, 1=info, 2=warn, 3=error
-                const outType = parseInt(typeStr, 10);
-                if (!isNaN(outType)) {
-                    SynapseZAPI2.triggerSessionOutput(this.pid, outType, content);
-                }
-            }
-        } else if (cmd === "error") {
-            // Unhandled errors from the client are always type 3 (error)
-            SynapseZAPI2.triggerSessionOutput(this.pid, 3, payload);
-        }
-    }
-
     async init() {
-        const pipePath = `\\\\.\\pipe\\synz-${this.pid}`;
-        return new Promise((resolve) => {
-            let resolved = false;
-            const done = (val) => {
-                if (!resolved) {
-                    resolved = true;
-                    resolve(val);
-                }
-            };
-
-            const timeout = setTimeout(() => {
-                if (this.mainSocket) {
-                    try { this.mainSocket.destroy(); } catch (_) {}
-                }
-                done(false);
-            }, 3000);
-
-            try {
-                this.mainSocket = net.createConnection(pipePath, () => {
-                    this.mainSocket.write("new");
-                });
-
-                this.mainSocket.once("data", (data) => {
-                    clearTimeout(timeout);
-                    const rawName = data.toString("utf8").replace(/\0/g, "").trim();
-                    if (rawName) {
-                        this.pipeName = rawName.startsWith("\\\\.\\pipe\\") ? rawName : `\\\\.\\pipe\\${rawName}`;
-                        this.isConnected = true;
-                        this._startSessionLoop();
-                        done(true);
-                    } else {
-                        done(false);
-                    }
-                });
-
-                this.mainSocket.on("error", () => {
-                    clearTimeout(timeout);
-                    done(false);
-                });
-            } catch (_) {
-                clearTimeout(timeout);
-                done(false);
-            }
-        });
-    }
-
-    _startSessionLoop() {
-        if (this.destroyed || !this.pipeName) return;
-
-        try {
-            this.sessionSocket = net.createConnection(this.pipeName, () => {
-                this._sessionTick();
-            });
-
-            this.sessionSocket.on("data", (data) => {
-                this._handleSessionData(data);
-            });
-
-            this.sessionSocket.on("error", () => {
-                this.destroy();
-                SynapseZAPI2.removeSession(this.pid);
-            });
-
-            this.sessionSocket.on("close", () => {
-                this.destroy();
-                SynapseZAPI2.removeSession(this.pid);
-            });
-        } catch (_) {
-            this.destroy();
-            SynapseZAPI2.removeSession(this.pid);
-        }
-    }
-
-    _sessionTick() {
-        if (this.destroyed || !this.sessionSocket || !this.sessionSocket.writable) return;
-
-        const q = this.pendingCommandQueue.splice(0, this.pendingCommandQueue.length);
-        q.push("read");
-
-        try {
-            this.sessionSocket.write(String(q.length));
-            for (const cmd of q) {
-                this.sessionSocket.write(cmd);
-            }
-        } catch (_) {
-            this.destroy();
-            SynapseZAPI2.removeSession(this.pid);
-            return;
-        }
-
-        this._loopTimer = setTimeout(() => {
-            this._sessionTick();
-        }, 50);
-    }
-
-    _handleSessionData(buffer) {
-        const text = buffer.toString("utf8");
-        const parts = text.split("\0").map(s => s.trim()).filter(Boolean);
-        for (let i = 0; i < parts.length; i++) {
-            const msg = parts[i];
-            for (const cb of this.onMessageCallbacks) {
-                try {
-                    cb("read", msg, i);
-                } catch (_) {}
-            }
-        }
+        return IsSynz(this.pid);
     }
 
     destroy() {
         this.destroyed = true;
         this.isConnected = false;
-        if (this._loopTimer) {
-            clearTimeout(this._loopTimer);
-            this._loopTimer = null;
-        }
-        if (this.mainSocket) {
-            try { this.mainSocket.destroy(); } catch (_) {}
-            this.mainSocket = null;
-        }
-        if (this.sessionSocket) {
-            try { this.sessionSocket.destroy(); } catch (_) {}
-            this.sessionSocket = null;
-        }
     }
 }
 
@@ -655,7 +495,7 @@ class SynapseZAPI2 {
 
         // Remove dead sessions
         for (const [pid, session] of SESSIONS.entries()) {
-            if (!currentPids.has(pid)) {
+            if (!currentPids.has(pid) || !IsSynz(pid)) {
                 session.destroy();
                 SESSIONS.delete(pid);
                 for (const cb of SESSION_REMOVED_EVENTS) {
@@ -672,22 +512,14 @@ class SynapseZAPI2 {
 
             const session = new SynapseSession(pid);
             SESSIONS.set(pid, session);
-            const ok = await session.init();
-            if (ok) {
-                for (const cb of SESSION_ADDED_EVENTS) {
-                    try { cb(session); } catch (_) {}
-                }
-            } else {
-                session.destroy();
-                SESSIONS.delete(pid);
+            for (const cb of SESSION_ADDED_EVENTS) {
+                try { cb(session); } catch (_) {}
             }
         }
     }
 
     /**
-     * Execute a Lua script. Uses named pipe sessions when available (V2),
-     * with automatic fallback to the V1 scheduler file-drop mechanism.
-     *
+     * Execute a Lua script.
      * Equivalent to RS API:
      *   SynapseZAPI2::execute(script, 0);              // all instances
      *   SynapseZAPI2::execute(script, pid);            // specific PID
@@ -697,23 +529,12 @@ class SynapseZAPI2 {
      * @returns {number} 0 on success
      */
     static execute(source, pid = 0) {
-        const targetPid = Number(pid) || 0;
-
-        // V2: dispatch via live pipe sessions
-        if (targetPid === 0) {
-            for (const session of SESSIONS.values()) {
-                session.execute(source);
-            }
-        } else {
-            const session = SESSIONS.get(targetPid);
-            if (session) {
-                session.execute(source);
-            }
+        const text = String(source || '').trim();
+        if (!text) {
+            return 0; // Guard against blank scripts
         }
-
-        // V1 fallback: also write to scheduler folder (always fires; Synapse Z will pick it up)
-        Execute(source, targetPid);
-        return 0;
+        const targetPid = Number(pid) || 0;
+        return Execute(text, targetPid);
     }
 
     /**
