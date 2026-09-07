@@ -83,7 +83,7 @@ export function DialogManager() {
                 }}
             >
                 <div
-                    className={`hw-dialog flex ${isChangelog ? 'min-w-[28rem] max-w-[38rem] w-[38rem] hw-changelog' : 'min-w-[24rem] max-w-[28rem]'} flex-col rounded-lg`}
+                    className={`hw-dialog flex ${isChangelog ? 'min-w-[28rem] max-w-[38rem] w-[38rem]' : 'min-w-[24rem] max-w-[28rem]'} flex-col rounded-lg`}
                     style={{
                         animation: closing
                             ? '100ms ease-in 0s 1 normal forwards running elem-blur-out'
@@ -101,9 +101,9 @@ export function DialogManager() {
                             />
                         )}
                         <div className="flex h-full flex-col gap-2 flex-grow min-w-0">
-                            <div className="caption align-top text-xl font-bold">{activeDialog.title}</div>
+                            <div className="caption align-top text-xl font-bold !bg-transparent" style={{ background: 'transparent' }}>{activeDialog.title}</div>
                             {activeDialog.body && (
-                                <div className={`text-sm opacity-90 whitespace-pre-wrap ${isChangelog ? 'changelog-contents max-h-[55vh] overflow-y-auto pr-2 select-text font-sans leading-relaxed' : ''}`}>
+                                <div className={`text-sm opacity-90 whitespace-pre-wrap ${isChangelog ? 'max-h-[55vh] overflow-y-auto pr-2 select-text font-sans leading-relaxed' : ''}`}>
                                     {activeDialog.body}
                                 </div>
                             )}
