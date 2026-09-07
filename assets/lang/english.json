@@ -373,6 +373,16 @@
         "settings-session-notifications": "Session notifications",
         "settings-session-notifications-desc": "Show a notification when a session is added or removed.",
         "clients-session-added-body": "The session with the PID: \"{pid}\" has been added to the Client page.",
-        "clients-session-removed-body": "The session with the PID: \"{pid}\" has been removed from the Client page."
+        "clients-session-removed-body": "The session with the PID: \"{pid}\" has been removed from the Client page.",
+        "settings-consoleredirection": "Console redirection",
+        "settings-consoleredirection-desc": "Redirects game output and errors to the console.",
+        "settings-enableraknet": "Enable RakNet",
+        "settings-enableraknet-desc": "Enables RakNet network protocol hooking and interception.",
+        "settings-enablereplicatesignal": "Enable ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Enables replication signals for game instances.",
+        "settings-enablecfiresignal": "Enable CFireSignal",
+        "settings-enablecfiresignal-desc": "Enables native C-level firing of Instance signals.",
+        "settings-enablesetfflag": "Enable SetFFlag",
+        "settings-enablesetfflag-desc": "Allows modifying engine Fast Flags at runtime."
     }
 }

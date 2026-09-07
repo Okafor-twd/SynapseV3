@@ -257,6 +257,16 @@
         "settings-session-notifications": "Oznámenia o relácii",
         "settings-session-notifications-desc": "Zobrazí oznámenie, keď je relácia pridaná alebo odstránená.",
         "clients-session-added-body": "Relácia s PID: \"{pid}\" bola pridaná na stránku Klientov.",
-        "clients-session-removed-body": "Relácia s PID: \"{pid}\" bola odstránená zo stránky Klientov."
+        "clients-session-removed-body": "Relácia s PID: \"{pid}\" bola odstránená zo stránky Klientov.",
+        "settings-consoleredirection": "Presmerovanie konzoly",
+        "settings-consoleredirection-desc": "Presmeruje výstup a chyby hry do konzoly.",
+        "settings-enableraknet": "Povoliť RakNet",
+        "settings-enableraknet-desc": "Povolí hooking a zachytávanie sieťového protokolu RakNet.",
+        "settings-enablereplicatesignal": "Povoliť ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Povolí replikačné signály pre inštancie hry.",
+        "settings-enablecfiresignal": "Povoliť CFireSignal",
+        "settings-enablecfiresignal-desc": "Povolí natívne spúšťanie signálov inštancie na úrovni C.",
+        "settings-enablesetfflag": "Povoliť SetFFlag",
+        "settings-enablesetfflag-desc": "Umožňuje upravovať Fast Flagy enginu počas behu."
     }
 }

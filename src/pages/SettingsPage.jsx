@@ -3,6 +3,7 @@ import { AppSettings } from '../components/settings/AppSettings';
 import { EditorSettings } from '../components/settings/EditorSettings';
 import { ConsoleSettings } from '../components/settings/ConsoleSettings';
 import { InterfaceSettings } from '../components/settings/InterfaceSettings';
+import { SynapseZSettings } from '../components/settings/SynapseZSettings';
 import { MiscSettings } from '../components/settings/MiscSettings';
 import { i18n } from '../services/i18nService';
 
@@ -11,6 +12,7 @@ const CATEGORIES = [
     { id: 'settings-category-editor', label: 'Editor', icon: 'fluent:code-20-filled' },
     { id: 'settings-category-console', label: 'Console', icon: 'fluent:window-console-20-filled' },
     { id: 'settings-category-interface', label: 'Layout', icon: 'fluent:layer-diagonal-20-filled' },
+    { id: 'settings-category-synapse-z', label: 'Synapse Z', icon: 'bx:code-curly' },
     { id: 'settings-category-misc', label: 'Miscellaneous', icon: 'fluent:settings-20-filled' },
 ];
 
@@ -54,7 +56,7 @@ export function SettingsPage() {
                                         isSelected ? 'opacity-100' : 'opacity-50 group-active:opacity-50'
                                     }`}
                                 >
-                                    {i18n.t(cat.id, cat.label)}
+                                    {cat.id === 'settings-category-synapse-z' ? cat.label : i18n.t(cat.id, cat.label)}
                                 </div>
                             </div>
                         );
@@ -88,6 +90,9 @@ export function SettingsPage() {
                         </div>
                         <div id="settings-category-interface" className="page">
                             <InterfaceSettings />
+                        </div>
+                        <div id="settings-category-synapse-z" className="page">
+                            <SynapseZSettings />
                         </div>
                         <div id="settings-category-misc" className="page">
                             <MiscSettings />

@@ -257,6 +257,16 @@
         "settings-session-notifications": "Notificações de sessão",
         "settings-session-notifications-desc": "Exibe uma notificação quando uma sessão é adicionada ou removida.",
         "clients-session-added-body": "A sessão com o PID: \"{pid}\" foi adicionada à página de Clientes.",
-        "clients-session-removed-body": "A sessão com o PID: \"{pid}\" foi removida da página de Clientes."
+        "clients-session-removed-body": "A sessão com o PID: \"{pid}\" foi removida da página de Clientes.",
+        "settings-consoleredirection": "Redirecionamento de console",
+        "settings-consoleredirection-desc": "Redireciona a saída e os erros do jogo para o console.",
+        "settings-enableraknet": "Ativar RakNet",
+        "settings-enableraknet-desc": "Ativa a interceptação e o hooking do protocolo de rede RakNet.",
+        "settings-enablereplicatesignal": "Ativar ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Ativa sinais de replicação para instâncias do jogo.",
+        "settings-enablecfiresignal": "Ativar CFireSignal",
+        "settings-enablecfiresignal-desc": "Ativa o disparo nativo em nível C de sinais de Instância.",
+        "settings-enablesetfflag": "Ativar SetFFlag",
+        "settings-enablesetfflag-desc": "Permite modificar Fast Flags da engine em tempo de execução."
     }
 }

@@ -257,6 +257,16 @@
         "settings-session-notifications": "Notifikasi sesi",
         "settings-session-notifications-desc": "Tampilkan notifikasi saat sesi ditambahkan atau dihapus.",
         "clients-session-added-body": "Sesi dengan PID: \"{pid}\" telah ditambahkan ke halaman Klien.",
-        "clients-session-removed-body": "Sesi dengan PID: \"{pid}\" telah dihapus dari halaman Klien."
+        "clients-session-removed-body": "Sesi dengan PID: \"{pid}\" telah dihapus dari halaman Klien.",
+        "settings-consoleredirection": "Pengalihan konsol",
+        "settings-consoleredirection-desc": "Mengalihkan output dan kesalahan game ke konsol.",
+        "settings-enableraknet": "Aktifkan RakNet",
+        "settings-enableraknet-desc": "Mengaktifkan hooking dan intersepsi protokol jaringan RakNet.",
+        "settings-enablereplicatesignal": "Aktifkan ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Mengaktifkan sinyal replikasi untuk instance game.",
+        "settings-enablecfiresignal": "Aktifkan CFireSignal",
+        "settings-enablecfiresignal-desc": "Mengaktifkan penembakan native sinyal Instance tingkat C.",
+        "settings-enablesetfflag": "Aktifkan SetFFlag",
+        "settings-enablesetfflag-desc": "Memungkinkan memodifikasi Fast Flag engine saat runtime."
     }
 }

@@ -22,6 +22,154 @@ const MainPath = path.join(LocalAppData, "Synapse Z");
 const BinPath = path.join(MainPath, "bin");
 const SchedulerPath = path.join(BinPath, "scheduler");
 const AccountKeyPath = path.join(LocalAppData, "auth_v2.syn");
+const SynzSettingsPath = path.join(BinPath, "settings.syn");
+
+const DEFAULT_SYNZ_SETTINGS = {
+    internal_ui_key: "F1",
+    disable_purchases: true,
+    redirect_output: false,
+    notify_output: false,
+    redirect_errors: true,
+    notify_errors: true,
+    beta_app_execution: false,
+    use_synapse_console: true,
+    use_roblox_console: false,
+    internal_ui_dex_display_hidden: false,
+    internal_ui_dex_display_notscriptable: false,
+    clear_output_on_teleport: false,
+    enable_setfflag: true,
+    enable_raknet: true,
+    enable_replicatesignal: true,
+    enable_cfiresignal: true,
+    internal_ui_scaling: 1.0,
+    internal_ui_highlighting_fuzz_score: 20.0,
+};
+
+function readSynzSettings() {
+    try {
+        if (fs.existsSync(SynzSettingsPath)) {
+            const raw = fs.readFileSync(SynzSettingsPath, "utf8");
+            const parsed = JSON.parse(raw);
+            const merged = { ...DEFAULT_SYNZ_SETTINGS, ...parsed };
+            merged.console_redirection = Boolean(merged.redirect_output && merged.redirect_errors);
+            return merged;
+        }
+    } catch (_) {}
+    return { ...DEFAULT_SYNZ_SETTINGS, console_redirection: false };
+}
+
+function writeSynzSettings(settings) {
+    try {
+        const toSave = { ...settings };
+        delete toSave.console_redirection;
+        const jsonStr = JSON.stringify(toSave);
+        fs.writeFileSync(SynzSettingsPath, jsonStr, "utf8");
+        return true;
+    } catch (e) {
+        setLatestErrorMessage(e.message || String(e));
+        return false;
+    }
+}
+
+const CONSOLE_READERS = new Map(); // pid -> ChildProcess
+
+function startConsoleReader(pid) {
+    const numPid = Number(pid);
+    if (!numPid || CONSOLE_READERS.has(numPid)) return;
+
+    const exePath = path.join(__dirname, "synz_console_reader.exe");
+    if (!fs.existsSync(exePath)) return;
+
+    try {
+        const child = child_process.spawn(exePath, [String(numPid)], {
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "ignore"],
+        });
+
+        let buffer = "";
+        child.stdout.on("data", (chunk) => {
+            buffer += chunk.toString("utf8");
+            let newlineIdx;
+            while ((newlineIdx = buffer.indexOf("\n")) !== -1) {
+                const line = buffer.slice(0, newlineIdx).trim();
+                buffer = buffer.slice(newlineIdx + 1);
+                if (line) {
+                    try {
+                        const msg = JSON.parse(line);
+                        if (msg && typeof msg.content === "string") {
+                            SynapseZAPI2.triggerSessionOutput(msg.pid, msg.type, msg.content);
+                        }
+                    } catch (_) {}
+                }
+            }
+        });
+
+        child.on("exit", () => {
+            CONSOLE_READERS.delete(numPid);
+        });
+        child.on("error", () => {
+            CONSOLE_READERS.delete(numPid);
+        });
+
+        CONSOLE_READERS.set(numPid, child);
+    } catch (_) {}
+}
+
+function stopConsoleReader(pid) {
+    const numPid = Number(pid);
+    const child = CONSOLE_READERS.get(numPid);
+    if (child) {
+        try { child.kill(); } catch (_) {}
+        CONSOLE_READERS.delete(numPid);
+    }
+}
+
+function stopAllConsoleReaders() {
+    for (const [pid, child] of CONSOLE_READERS.entries()) {
+        try { child.kill(); } catch (_) {}
+    }
+    CONSOLE_READERS.clear();
+}
+
+function updateConsoleRedirectionState(enabled) {
+    if (enabled) {
+        for (const pid of SESSIONS.keys()) {
+            startConsoleReader(pid);
+        }
+    } else {
+        stopAllConsoleReaders();
+    }
+}
+
+function setSynzSetting(key, val) {
+    const current = readSynzSettings();
+    if (key === "console_redirection") {
+        const enabled = Boolean(val);
+        if (enabled) {
+            current.redirect_output = true;
+            current.redirect_errors = true;
+            current.notify_errors = false;
+            current.use_roblox_console = false;
+        } else {
+            current.redirect_output = false;
+            current.redirect_errors = false;
+            current.notify_errors = true;
+            current.notify_output = true;
+        }
+        writeSynzSettings(current);
+        updateConsoleRedirectionState(enabled);
+        current.console_redirection = enabled;
+        return current;
+    }
+
+    if (key in current || key.startsWith("enable_")) {
+        current[key] = Boolean(val);
+        writeSynzSettings(current);
+        return current;
+    }
+
+    return current;
+}
 
 function setLatestErrorMessage(msg) {
     LatestErrorMsg = String(msg || "");
@@ -496,6 +644,7 @@ class SynapseZAPI2 {
         // Remove dead sessions
         for (const [pid, session] of SESSIONS.entries()) {
             if (!currentPids.has(pid) || !IsSynz(pid)) {
+                stopConsoleReader(pid);
                 session.destroy();
                 SESSIONS.delete(pid);
                 for (const cb of SESSION_REMOVED_EVENTS) {
@@ -512,6 +661,12 @@ class SynapseZAPI2 {
 
             const session = new SynapseSession(pid);
             SESSIONS.set(pid, session);
+
+            const synzSettings = readSynzSettings();
+            if (synzSettings.redirect_output || synzSettings.redirect_errors) {
+                startConsoleReader(pid);
+            }
+
             for (const cb of SESSION_ADDED_EVENTS) {
                 try { cb(session); } catch (_) {}
             }
@@ -547,6 +702,7 @@ class SynapseZAPI2 {
 
     static removeSession(pid) {
         const targetPid = Number(pid);
+        stopConsoleReader(targetPid);
         const session = SESSIONS.get(targetPid);
         if (session) {
             session.destroy();
@@ -563,6 +719,12 @@ class SynapseZAPI2 {
             try { cb(session, outType, output); } catch (_) {}
         }
     }
+
+    static readSettings() { return readSynzSettings(); }
+    static writeSettings(s) { return writeSynzSettings(s); }
+    static setSetting(k, v) { return setSynzSetting(k, v); }
+    static startConsoleReader(pid) { return startConsoleReader(pid); }
+    static stopConsoleReader(pid) { return stopConsoleReader(pid); }
 }
 
 // ── V1 Static Class Container (SynapseZAPI) ──────────────────────────────────
@@ -637,4 +799,9 @@ module.exports = {
     SynapseSession,
     SynapseZAPI2,
     SynzApi2: SynapseZAPI2,
+
+    // Synapse Z settings
+    readSynzSettings,
+    writeSynzSettings,
+    setSynzSetting,
 };

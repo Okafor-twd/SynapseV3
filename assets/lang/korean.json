@@ -257,6 +257,16 @@
         "settings-session-notifications": "세션 알림",
         "settings-session-notifications-desc": "세션이 추가되거나 제거될 때 알림을 표시합니다.",
         "clients-session-added-body": "PID: \"{pid}\"인 세션이 클라이언트 페이지에 추가되었습니다.",
-        "clients-session-removed-body": "PID: \"{pid}\"인 세션이 클라이언트 페이지에서 제거되었습니다."
+        "clients-session-removed-body": "PID: \"{pid}\"인 세션이 클라이언트 페이지에서 제거되었습니다.",
+        "settings-consoleredirection": "콘솔 리디렉션",
+        "settings-consoleredirection-desc": "게임 출력 및 오류를 콘솔로 리디렉션합니다.",
+        "settings-enableraknet": "RakNet 활성화",
+        "settings-enableraknet-desc": "RakNet 네트워크 프로토콜 후킹 및 가로채기를 활성화합니다.",
+        "settings-enablereplicatesignal": "ReplicateSignal 활성화",
+        "settings-enablereplicatesignal-desc": "게임 인스턴스에 대한 복제 신호를 활성화합니다.",
+        "settings-enablecfiresignal": "CFireSignal 활성화",
+        "settings-enablecfiresignal-desc": "인스턴스 신호의 네이티브 C 레벨 호출을 활성화합니다.",
+        "settings-enablesetfflag": "SetFFlag 활성화",
+        "settings-enablesetfflag-desc": "런타임 시 엔진 Fast Flag 수정을 허용합니다."
     }
 }

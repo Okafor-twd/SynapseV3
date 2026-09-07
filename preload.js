@@ -54,6 +54,10 @@ contextBridge.exposeInMainWorld('hwAPI', {
         return () => ipcRenderer.removeListener('client:session-removed', handler);
     },
 
+    // Synapse Z Engine Config (settings.syn)
+    getSynzConfig: () => ipcRenderer.invoke('synz:get-config'),
+    setSynzConfig: (key, val) => ipcRenderer.invoke('synz:set-config', key, val),
+
     // Editor config files (config/editor/*.json)
     getEditorConfig: (name) => ipcRenderer.invoke('config:get-editor', name),
     setEditorConfig: (name, data) => ipcRenderer.invoke('config:set-editor', name, data),

@@ -256,6 +256,16 @@
         "settings-session-notifications": "Oturum bildirimleri",
         "settings-session-notifications-desc": "Bir oturum eklendiğinde veya kaldırıldığında bildirim gösterir.",
         "clients-session-added-body": "PID: \"{pid}\" olan oturum İstemci sayfasına eklendi.",
-        "clients-session-removed-body": "PID: \"{pid}\" olan oturum İstemci sayfasından kaldırıldı."
+        "clients-session-removed-body": "PID: \"{pid}\" olan oturum İstemci sayfasından kaldırıldı.",
+        "settings-consoleredirection": "Konsol yönlendirmesi",
+        "settings-consoleredirection-desc": "Oyun çıktısını ve hatalarını konsola yönlendirir.",
+        "settings-enableraknet": "RakNet'i Etkinleştir",
+        "settings-enableraknet-desc": "RakNet ağ protokolü kancalamasını ve durdurmasını etkinleştirir.",
+        "settings-enablereplicatesignal": "ReplicateSignal'i Etkinleştir",
+        "settings-enablereplicatesignal-desc": "Oyun örnekleri için çoğaltma sinyallerini etkinleştirir.",
+        "settings-enablecfiresignal": "CFireSignal'i Etkinleştir",
+        "settings-enablecfiresignal-desc": "Örnek sinyallerinin yerel C düzeyinde tetiklenmesini etkinleştirir.",
+        "settings-enablesetfflag": "SetFFlag'i Etkinleştir",
+        "settings-enablesetfflag-desc": "Çalışma zamanında motor Fast Flag'lerini değiştirmeye izin verir."
     }
 }

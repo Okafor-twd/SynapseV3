@@ -257,6 +257,16 @@
         "settings-session-notifications": "Thông báo phiên",
         "settings-session-notifications-desc": "Hiện thông báo khi một phiên được thêm vào hoặc bị xóa.",
         "clients-session-added-body": "Phiên có PID: \"{pid}\" đã được thêm vào trang Máy khách.",
-        "clients-session-removed-body": "Phiên có PID: \"{pid}\" đã bị xóa khỏi trang Máy khách."
+        "clients-session-removed-body": "Phiên có PID: \"{pid}\" đã bị xóa khỏi trang Máy khách.",
+        "settings-consoleredirection": "Chuyển hướng bảng điều khiển",
+        "settings-consoleredirection-desc": "Chuyển hướng đầu ra và lỗi trò chơi đến bảng điều khiển.",
+        "settings-enableraknet": "Bật RakNet",
+        "settings-enableraknet-desc": "Bật hooking và can thiệp giao thức mạng RakNet.",
+        "settings-enablereplicatesignal": "Bật ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Bật tín hiệu sao chép cho các phiên bản trò chơi.",
+        "settings-enablecfiresignal": "Bật CFireSignal",
+        "settings-enablecfiresignal-desc": "Bật kích hoạt tín hiệu Instance cấp độ C gốc.",
+        "settings-enablesetfflag": "Bật SetFFlag",
+        "settings-enablesetfflag-desc": "Cho phép sửa đổi Fast Flag của công cụ khi đang chạy."
     }
 }

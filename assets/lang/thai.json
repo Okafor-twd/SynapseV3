@@ -257,6 +257,16 @@
         "settings-session-notifications": "การแจ้งเตือนเซสชัน",
         "settings-session-notifications-desc": "แสดงการแจ้งเตือนเมื่อมีการเพิ่มหรือลบเซสชัน",
         "clients-session-added-body": "เซสชันที่มี PID: \"{pid}\" ถูกเพิ่มเข้าสู่หน้าไคลเอนต์แล้ว",
-        "clients-session-removed-body": "เซสชันที่มี PID: \"{pid}\" ถูกลบออกจากหน้าไคลเอนต์แล้ว"
+        "clients-session-removed-body": "เซสชันที่มี PID: \"{pid}\" ถูกลบออกจากหน้าไคลเอนต์แล้ว",
+        "settings-consoleredirection": "การเปลี่ยนเส้นทางคอนโซล",
+        "settings-consoleredirection-desc": "เปลี่ยนเส้นทางผลลัพธ์และข้อผิดพลาดของเกมไปยังคอนโซล",
+        "settings-enableraknet": "เปิดใช้งาน RakNet",
+        "settings-enableraknet-desc": "เปิดใช้งานการฮุกและการสกัดกั้นโปรโตคอลเครือข่าย RakNet",
+        "settings-enablereplicatesignal": "เปิดใช้งาน ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "เปิดใช้งานสัญญาณการจำลองสำหรับอินสแตนซ์ของเกม",
+        "settings-enablecfiresignal": "เปิดใช้งาน CFireSignal",
+        "settings-enablecfiresignal-desc": "เปิดใช้งานการยิงสัญญาณ Instance ระดับ C แบบเนทีฟ",
+        "settings-enablesetfflag": "เปิดใช้งาน SetFFlag",
+        "settings-enablesetfflag-desc": "อนุญาตให้แก้ไข Fast Flag ของเอนจินในขณะรันไทม์"
     }
 }

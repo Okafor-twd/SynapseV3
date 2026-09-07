@@ -257,6 +257,16 @@
         "settings-session-notifications": "Notificări de sesiune",
         "settings-session-notifications-desc": "Afișează o notificare când o sesiune este adăugată sau eliminată.",
         "clients-session-added-body": "Sesiunea cu PID-ul: \"{pid}\" a fost adăugată pe pagina Client.",
-        "clients-session-removed-body": "Sesiunea cu PID-ul: \"{pid}\" a fost eliminată de pe pagina Client."
+        "clients-session-removed-body": "Sesiunea cu PID-ul: \"{pid}\" a fost eliminată de pe pagina Client.",
+        "settings-consoleredirection": "Redirecționare consolă",
+        "settings-consoleredirection-desc": "Redirecționează ieșirea și erorile jocului către consolă.",
+        "settings-enableraknet": "Activează RakNet",
+        "settings-enableraknet-desc": "Activează interceptarea și interceptarea protocolului de rețea RakNet.",
+        "settings-enablereplicatesignal": "Activează ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Activează semnalele de replicare pentru instanțele de joc.",
+        "settings-enablecfiresignal": "Activează CFireSignal",
+        "settings-enablecfiresignal-desc": "Activează declanșarea nativă la nivel C a semnalelor de Instanță.",
+        "settings-enablesetfflag": "Activează SetFFlag",
+        "settings-enablesetfflag-desc": "Permite modificarea Fast Flag-urilor motorului la runtime."
     }
 }

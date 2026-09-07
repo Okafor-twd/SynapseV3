@@ -257,6 +257,16 @@
         "settings-session-notifications": "Notifiche di sessione",
         "settings-session-notifications-desc": "Mostra una notifica quando una sessione viene aggiunta o rimossa.",
         "clients-session-added-body": "La sessione con PID: \"{pid}\" è stata aggiunta alla pagina Client.",
-        "clients-session-removed-body": "La sessione con PID: \"{pid}\" è stata rimossa dalla pagina Client."
+        "clients-session-removed-body": "La sessione con PID: \"{pid}\" è stata rimossa dalla pagina Client.",
+        "settings-consoleredirection": "Reindirizzamento console",
+        "settings-consoleredirection-desc": "Reindirizza l'output e gli errori del gioco alla console.",
+        "settings-enableraknet": "Abilita RakNet",
+        "settings-enableraknet-desc": "Abilita l'hooking e l'intercettazione del protocollo di rete RakNet.",
+        "settings-enablereplicatesignal": "Abilita ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Abilita i segnali di replica per le istanze di gioco.",
+        "settings-enablecfiresignal": "Abilita CFireSignal",
+        "settings-enablecfiresignal-desc": "Abilita l'attivazione nativa a livello C dei segnali di Istanza.",
+        "settings-enablesetfflag": "Abilita SetFFlag",
+        "settings-enablesetfflag-desc": "Consente di modificare i Fast Flag del motore durante l'esecuzione."
     }
 }

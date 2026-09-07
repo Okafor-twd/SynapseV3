@@ -257,6 +257,16 @@
         "settings-session-notifications": "Sitzungsbenachrichtigungen",
         "settings-session-notifications-desc": "Zeigt eine Benachrichtigung an, wenn eine Sitzung hinzugefügt oder entfernt wird.",
         "clients-session-added-body": "Die Sitzung mit der PID: \"{pid}\" wurde zur Client-Seite hinzugefügt.",
-        "clients-session-removed-body": "Die Sitzung mit der PID: \"{pid}\" wurde von der Client-Seite entfernt."
+        "clients-session-removed-body": "Die Sitzung mit der PID: \"{pid}\" wurde von der Client-Seite entfernt.",
+        "settings-consoleredirection": "Konsolenumleitung",
+        "settings-consoleredirection-desc": "Leitet Spielausgaben und -fehler an die Konsole weiter.",
+        "settings-enableraknet": "RakNet aktivieren",
+        "settings-enableraknet-desc": "Aktiviert das Abfangen und Hooken des RakNet-Netzwerkprotokolls.",
+        "settings-enablereplicatesignal": "ReplicateSignal aktivieren",
+        "settings-enablereplicatesignal-desc": "Aktiviert Replikationssignale für Spielinstanzen.",
+        "settings-enablecfiresignal": "CFireSignal aktivieren",
+        "settings-enablecfiresignal-desc": "Aktiviert das native Auslösen von Instanzsignalen auf C-Ebene.",
+        "settings-enablesetfflag": "SetFFlag aktivieren",
+        "settings-enablesetfflag-desc": "Ermöglicht das Ändern von Fast-Flags der Engine zur Laufzeit."
     }
 }

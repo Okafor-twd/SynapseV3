@@ -1164,6 +1164,15 @@ ipcMain.handle('client:get-sessions', () => {
     return Array.from(instances.keys());
 });
 
+// Synapse Z Configuration (settings.syn)
+ipcMain.handle('synz:get-config', () => {
+    return SynzApi.readSynzSettings();
+});
+
+ipcMain.handle('synz:set-config', (_e, key, val) => {
+    return SynzApi.setSynzSetting(key, val);
+});
+
 // Editor
 ipcMain.on('editor:execute', (e, source) => {
     const scriptText = String(source || '').trim();

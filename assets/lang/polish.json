@@ -257,6 +257,16 @@
         "settings-session-notifications": "Powiadomienia o sesjach",
         "settings-session-notifications-desc": "Wyświetla powiadomienie, gdy sesja zostaje dodana lub usunięta.",
         "clients-session-added-body": "Sesja z PID: \"{pid}\" została dodana do strony Klientów.",
-        "clients-session-removed-body": "Sesja z PID: \"{pid}\" została usunięta ze strony Klientów."
+        "clients-session-removed-body": "Sesja z PID: \"{pid}\" została usunięta ze strony Klientów.",
+        "settings-consoleredirection": "Przekierowanie konsoli",
+        "settings-consoleredirection-desc": "Przekierowuje wyjście i błędy gry do konsoli.",
+        "settings-enableraknet": "Włącz RakNet",
+        "settings-enableraknet-desc": "Włącza przechwytywanie i hooking protokołu sieciowego RakNet.",
+        "settings-enablereplicatesignal": "Włącz ReplicateSignal",
+        "settings-enablereplicatesignal-desc": "Włącza sygnały replikacji dla instancji gry.",
+        "settings-enablecfiresignal": "Włącz CFireSignal",
+        "settings-enablecfiresignal-desc": "Włącza natywne wywoływanie sygnałów instancji na poziomie C.",
+        "settings-enablesetfflag": "Włącz SetFFlag",
+        "settings-enablesetfflag-desc": "Umożliwia modyfikowanie flag Fast Flag silnika w czasie działania."
     }
 }

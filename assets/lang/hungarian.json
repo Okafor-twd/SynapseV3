@@ -257,6 +257,16 @@
         "settings-session-notifications": "Munkamenet értesítések",
         "settings-session-notifications-desc": "Értesítést jelenít meg, amikor munkamenet kerül hozzáadásra vagy eltávolításra.",
         "clients-session-added-body": "A(z) \"{pid}\" PID-del rendelkező munkamenet hozzáadásra került a Kliens oldalhoz.",
-        "clients-session-removed-body": "A(z) \"{pid}\" PID-del rendelkező munkamenet eltávolításra került a Kliens oldalról."
+        "clients-session-removed-body": "A(z) \"{pid}\" PID-del rendelkező munkamenet eltávolításra került a Kliens oldalról.",
+        "settings-consoleredirection": "Konzol átirányítás",
+        "settings-consoleredirection-desc": "Átirányítja a játék kimenetét és hibáit a konzolra.",
+        "settings-enableraknet": "RakNet engedélyezése",
+        "settings-enableraknet-desc": "Engedélyezi a RakNet hálózati protokoll hookingját és elfogását.",
+        "settings-enablereplicatesignal": "ReplicateSignal engedélyezése",
+        "settings-enablereplicatesignal-desc": "Engedélyezi a replikációs jeleket a játékpéldányok számára.",
+        "settings-enablecfiresignal": "CFireSignal engedélyezése",
+        "settings-enablecfiresignal-desc": "Engedélyezi a példányjelek natív, C-szintű kiváltását.",
+        "settings-enablesetfflag": "SetFFlag engedélyezése",
+        "settings-enablesetfflag-desc": "Lehetővé teszi a motor Fast Flag-jeinek futásidejű módosítását."
     }
 }
