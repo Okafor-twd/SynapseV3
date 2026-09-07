@@ -1055,7 +1055,7 @@ function updateAttachStatus() {
 }
 
 function isSessionNotificationsEnabled() {
-    return globalSettings.session_notifications !== false;
+    return getSetting('session_notifications', true) !== false && globalSettings.session_notifications !== false;
 }
 
 // Track session_notifications setting from renderer via IPC
