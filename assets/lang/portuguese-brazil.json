@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Abrir no navegador",
         "contextmenu-copy-share-link": "Copiar link de compartilhamento",
         "contextmenu-open-in-folder": "Abrir na pasta",
-        "contextmenu-set-accent": "Definir destaque"
+        "contextmenu-set-accent": "Definir destaque",
+        "page-clients": "Clientes",
+        "clients-session-added": "Sessão Adicionada",
+        "clients-session-removed": "Sessão Removida",
+        "clients-session-prefix": "Sessão: ",
+        "clients-no-clients": "Nenhum cliente conectado.",
+        "clients-exec-this": "Executar para esta sessão",
+        "clients-exec-this-desc": "Quando habilitado, os scripts serão executados nesta sessão específica.",
+        "clients-exec-all": "Executar para todas as sessões",
+        "clients-exec-all-desc": "Quando habilitado, os scripts são executados em todas as sessões conectadas.",
+        "clients-filter-session": "Filtrar sessão",
+        "clients-filter-all": "Todas as sessões",
+        "settings-session-notifications": "Notificações de sessão",
+        "settings-session-notifications-desc": "Exibe uma notificação quando uma sessão é adicionada ou removida.",
+        "clients-session-added-body": "A sessão com o PID: \"{pid}\" foi adicionada à página de Clientes.",
+        "clients-session-removed-body": "A sessão com o PID: \"{pid}\" foi removida da página de Clientes."
     }
 }

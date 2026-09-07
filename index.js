@@ -1039,33 +1039,113 @@ ipcMain.on('console:flush', (e) => {
 // ── Synapse Z Integration (V1 & V2 RS API) ──────────────────────────────────
 let isSynzAttached = false;
 
+function getSetting(key, fallback) {
+    const val = require('./settings').get?.(key);
+    if (val !== undefined && val !== null) return val;
+    // Fallback: read from a simple JSON store if available, otherwise return fallback
+    return fallback;
+}
+
+function sendToRenderer(channel, ...args) {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send(channel, ...args);
+    }
+}
+
 function updateAttachStatus() {
     const instances = SynzApi.SynapseZAPI2.getInstances();
     const attached = instances.size > 0 || SynzApi.GetSynzRobloxInstances().length > 0;
     if (attached !== isSynzAttached) {
         isSynzAttached = attached;
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send('client:attach-status', isSynzAttached);
-        }
+        sendToRenderer('client:attach-status', isSynzAttached);
     }
 }
 
+function isSessionNotificationsEnabled() {
+    // Read from localStorage-backed setting persisted via settings:set IPC
+    try {
+        const store = require('electron').app ? null : null; // resolved at runtime
+        // The setting is persisted via window.hwAPI.setSetting → 'settings:set' → stored in userData
+        // We access it via the same store that handles 'settings:get' IPC
+        const val = globalSettings?.session_notifications;
+        return val !== false;
+    } catch (_) {
+        return true;
+    }
+}
+
+// Track session_notifications setting from renderer via IPC
+let globalSettings = { session_notifications: true };
+ipcMain.on('settings:set', (_e, key, value) => {
+    if (key === 'session_notifications') {
+        globalSettings.session_notifications = value !== false && value !== 'false';
+    }
+});
+
 SynzApi.SynapseZAPI2.onSessionAdded((session) => {
     updateAttachStatus();
+    sendToRenderer('client:session-added', session.pid);
+
     pushConsoleLog({
         level: 'info',
         text: `[Synapse Z] Attached to Roblox instance (PID: ${session.pid})`,
         time: formatConsoleTime(),
     });
+
+    // HW.addMessage notification (respects session_notifications setting)
+    if (isSessionNotificationsEnabled()) {
+        const pid = session.pid;
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.executeJavaScript(`
+                (function() {
+                    try {
+                        const i18n = window._i18n || window.i18n || null;
+                        const t = (key, def) => (i18n && i18n.t ? i18n.t(key, def) : def);
+                        window.HW && window.HW.addMessage({
+                            header: t('clients-session-added', 'Session Added'),
+                            desc: t('clients-session-added-body', 'The session with the PID: "{pid}" has been added to the Client page.').replace('{pid}', ${JSON.stringify(String(pid))}),
+                            icon: 'fluent:desktop-arrow-down-20-filled',
+                            state: 'done',
+                            autoDismiss: 4000,
+                        });
+                    } catch(_) {}
+                })();
+            `).catch(() => {});
+        }
+    }
 });
 
 SynzApi.SynapseZAPI2.onSessionRemoved((session) => {
     updateAttachStatus();
+    sendToRenderer('client:session-removed', session.pid);
+
     pushConsoleLog({
         level: 'warning',
         text: `[Synapse Z] Detached from Roblox instance (PID: ${session.pid})`,
         time: formatConsoleTime(),
     });
+
+    // HW.addMessage notification (respects session_notifications setting)
+    if (isSessionNotificationsEnabled()) {
+        const pid = session.pid;
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.executeJavaScript(`
+                (function() {
+                    try {
+                        const i18n = window._i18n || window.i18n || null;
+                        const t = (key, def) => (i18n && i18n.t ? i18n.t(key, def) : def);
+                        window.HW && window.HW.addMessage({
+                            header: t('clients-session-removed', 'Session Removed'),
+                            desc: t('clients-session-removed-body', 'The session with the PID: "{pid}" has been removed from the Client page.').replace('{pid}', ${JSON.stringify(String(pid))}),
+                            icon: 'fluent:desktop-arrow-up-20-filled',
+                            state: 'warning',
+                            autoDismiss: 4000,
+                        });
+                    } catch(_) {}
+                })();
+            `).catch(() => {});
+        }
+    }
 });
 
 SynzApi.SynapseZAPI2.onSessionOutput((session, outType, output) => {
@@ -1092,6 +1172,12 @@ ipcMain.handle('client:get-attach-status', () => {
     const instances = SynzApi.SynapseZAPI2.getInstances();
     if (instances.size > 0) return true;
     return SynzApi.GetSynzRobloxInstances().length > 0;
+});
+
+ipcMain.handle('client:get-sessions', () => {
+    // Returns an array of PIDs for all currently active sessions
+    const instances = SynzApi.SynapseZAPI2.getInstances();
+    return Array.from(instances.keys());
 });
 
 // Editor

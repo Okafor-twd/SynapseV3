@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Im Browser öffnen",
         "contextmenu-copy-share-link": "Freigabelink kopieren",
         "contextmenu-open-in-folder": "Im Ordner anzeigen",
-        "contextmenu-set-accent": "Akzentfarbe festlegen"
+        "contextmenu-set-accent": "Akzentfarbe festlegen",
+        "page-clients": "Clients",
+        "clients-session-added": "Sitzung hinzugefügt",
+        "clients-session-removed": "Sitzung entfernt",
+        "clients-session-prefix": "Sitzung: ",
+        "clients-no-clients": "Keine Clients verbunden.",
+        "clients-exec-this": "Für diese Sitzung ausführen",
+        "clients-exec-this-desc": "Wenn aktiviert, werden Skripte in dieser spezifischen Sitzung ausgeführt.",
+        "clients-exec-all": "Für alle Sitzungen ausführen",
+        "clients-exec-all-desc": "Wenn aktiviert, werden Skripte in allen verbundenen Sitzungen ausgeführt.",
+        "clients-filter-session": "Sitzung filtern",
+        "clients-filter-all": "Alle Sitzungen",
+        "settings-session-notifications": "Sitzungsbenachrichtigungen",
+        "settings-session-notifications-desc": "Zeigt eine Benachrichtigung an, wenn eine Sitzung hinzugefügt oder entfernt wird.",
+        "clients-session-added-body": "Die Sitzung mit der PID: \"{pid}\" wurde zur Client-Seite hinzugefügt.",
+        "clients-session-removed-body": "Die Sitzung mit der PID: \"{pid}\" wurde von der Client-Seite entfernt."
     }
 }

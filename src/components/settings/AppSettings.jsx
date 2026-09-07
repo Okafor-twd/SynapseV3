@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { i18n, LANGUAGES } from '../../services/i18nService';
 import { SettingRow } from './controls/SettingRow';
 import { Dropdown } from './controls/Dropdown';
+import { Checkbox } from './controls/Checkbox';
 import changelogFallback from '../../../CHANGELOG.md?raw';
 
 export function AppSettings() {
@@ -46,7 +47,20 @@ export function AppSettings() {
                 />
             </SettingRow>
 
-            {/* 2. Reset All Settings */}
+            {/* 2. Session Notifications */}
+            <SettingRow
+                caption={i18n.t('settings-session-notifications', 'Session notifications')}
+                description={i18n.t('settings-session-notifications-desc', 'Show a notification when a session is added or removed.')}
+                onClick={() => updateSetting('session_notifications', !settings.session_notifications)}
+            >
+                <Checkbox
+                    id="setting-session-notifications"
+                    checked={settings.session_notifications}
+                    onChange={(val) => updateSetting('session_notifications', val)}
+                />
+            </SettingRow>
+
+            {/* 3. Reset All Settings */}
             <SettingRow
                 caption={i18n.t('settings-reset', 'Reset all settings')}
                 description={i18n.t('settings-reset-desc', 'Pressing this button will reset all settings and close the application.')}
@@ -60,7 +74,7 @@ export function AppSettings() {
                 </button>
             </SettingRow>
 
-            {/* 3. Show Changelog */}
+            {/* 4. Show Changelog */}
             <SettingRow
                 caption={i18n.t('settings-changelog', 'Show changelog')}
                 description={i18n.t('settings-changelog-desc', 'Clicking this will show you the changelog for the latest version.')}
@@ -76,3 +90,4 @@ export function AppSettings() {
         </div>
     );
 }
+

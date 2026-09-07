@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "เปิดในเบราว์เซอร์",
         "contextmenu-copy-share-link": "คัดลอกลิงก์แชร์",
         "contextmenu-open-in-folder": "เปิดในโฟลเดอร์",
-        "contextmenu-set-accent": "ตั้งค่าสีเน้น"
+        "contextmenu-set-accent": "ตั้งค่าสีเน้น",
+        "page-clients": "ไคลเอนต์",
+        "clients-session-added": "เพิ่มเซสชันแล้ว",
+        "clients-session-removed": "ลบเซสชันแล้ว",
+        "clients-session-prefix": "เซสชัน: ",
+        "clients-no-clients": "ไม่มีไคลเอนต์ที่เชื่อมต่ออยู่",
+        "clients-exec-this": "ดำเนินการสำหรับเซสชันนี้",
+        "clients-exec-this-desc": "เมื่อเปิดใช้งาน สคริปต์จะดำเนินการบนเซสชันนี้โดยเฉพาะ",
+        "clients-exec-all": "ดำเนินการสำหรับทุกเซสชัน",
+        "clients-exec-all-desc": "เมื่อเปิดใช้งาน สคริปต์จะดำเนินการบนทุกเซสชันที่เชื่อมต่ออยู่",
+        "clients-filter-session": "กรองเซสชัน",
+        "clients-filter-all": "ทุกเซสชัน",
+        "settings-session-notifications": "การแจ้งเตือนเซสชัน",
+        "settings-session-notifications-desc": "แสดงการแจ้งเตือนเมื่อมีการเพิ่มหรือลบเซสชัน",
+        "clients-session-added-body": "เซสชันที่มี PID: \"{pid}\" ถูกเพิ่มเข้าสู่หน้าไคลเอนต์แล้ว",
+        "clients-session-removed-body": "เซสชันที่มี PID: \"{pid}\" ถูกลบออกจากหน้าไคลเอนต์แล้ว"
     }
 }

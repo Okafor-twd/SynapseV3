@@ -35,6 +35,7 @@ export function AppProvider({ children }) {
         show_console_at_launch: localStorage.getItem('synapse_setting_show_console_at_launch') === 'true',
         toast_scale: parseInt(localStorage.getItem('synapse_setting_toast_scale') || '100', 10),
         language: localStorage.getItem('synapse_setting_language') || 'english',
+        session_notifications: localStorage.getItem('synapse_setting_session_notifications') !== 'false',
     });
 
     // Active Dialog state
@@ -113,6 +114,7 @@ export function AppProvider({ children }) {
             show_console_at_launch: false,
             toast_scale: 100,
             language: 'english',
+            session_notifications: true,
         };
         setSettings(defaults);
         Object.entries(defaults).forEach(([k, v]) => {

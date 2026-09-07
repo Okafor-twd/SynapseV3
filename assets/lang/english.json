@@ -358,6 +358,21 @@
         "contextmenu-open-in-browser": "Open in browser",
         "contextmenu-copy-share-link": "Copy share link",
         "contextmenu-open-in-folder": "Open in folder",
-        "contextmenu-set-accent": "Set accent"
+        "contextmenu-set-accent": "Set accent",
+        "page-clients": "Clients",
+        "clients-session-added": "Session Added",
+        "clients-session-removed": "Session Removed",
+        "clients-session-prefix": "Session: ",
+        "clients-no-clients": "No clients connected.",
+        "clients-exec-this": "Execute for this session",
+        "clients-exec-this-desc": "When enabled, scripts will execute on this specific session.",
+        "clients-exec-all": "Execute for all sessions",
+        "clients-exec-all-desc": "When enabled, scripts execute on all connected sessions.",
+        "clients-filter-session": "Filter session",
+        "clients-filter-all": "All sessions",
+        "settings-session-notifications": "Session notifications",
+        "settings-session-notifications-desc": "Show a notification when a session is added or removed.",
+        "clients-session-added-body": "The session with the PID: \"{pid}\" has been added to the Client page.",
+        "clients-session-removed-body": "The session with the PID: \"{pid}\" has been removed from the Client page."
     }
 }

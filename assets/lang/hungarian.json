@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Megnyitás böngészőben",
         "contextmenu-copy-share-link": "Megosztási link másolása",
         "contextmenu-open-in-folder": "Megjelenítés mappában",
-        "contextmenu-set-accent": "Kiemelő szín beállítása"
+        "contextmenu-set-accent": "Kiemelő szín beállítása",
+        "page-clients": "Kliensek",
+        "clients-session-added": "Munkamenet hozzáadva",
+        "clients-session-removed": "Munkamenet eltávolítva",
+        "clients-session-prefix": "Munkamenet: ",
+        "clients-no-clients": "Nincs csatlakoztatott kliens.",
+        "clients-exec-this": "Végrehajtás erre a munkamenetre",
+        "clients-exec-this-desc": "Ha bekapcsolva, a szkriptek ezen a konkrét munkameneten futnak.",
+        "clients-exec-all": "Végrehajtás az összes munkamenetre",
+        "clients-exec-all-desc": "Ha bekapcsolva, a szkriptek az összes csatlakoztatott munkameneten futnak.",
+        "clients-filter-session": "Munkamenet szűrése",
+        "clients-filter-all": "Összes munkamenet",
+        "settings-session-notifications": "Munkamenet értesítések",
+        "settings-session-notifications-desc": "Értesítést jelenít meg, amikor munkamenet kerül hozzáadásra vagy eltávolításra.",
+        "clients-session-added-body": "A(z) \"{pid}\" PID-del rendelkező munkamenet hozzáadásra került a Kliens oldalhoz.",
+        "clients-session-removed-body": "A(z) \"{pid}\" PID-del rendelkező munkamenet eltávolításra került a Kliens oldalról."
     }
 }

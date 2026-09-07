@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Buka di browser",
         "contextmenu-copy-share-link": "Salin tautan bagikan",
         "contextmenu-open-in-folder": "Buka di folder",
-        "contextmenu-set-accent": "Atur aksen"
+        "contextmenu-set-accent": "Atur aksen",
+        "page-clients": "Klien",
+        "clients-session-added": "Sesi Ditambahkan",
+        "clients-session-removed": "Sesi Dihapus",
+        "clients-session-prefix": "Sesi: ",
+        "clients-no-clients": "Tidak ada klien yang terhubung.",
+        "clients-exec-this": "Jalankan untuk sesi ini",
+        "clients-exec-this-desc": "Jika diaktifkan, skrip akan berjalan pada sesi tertentu ini.",
+        "clients-exec-all": "Jalankan untuk semua sesi",
+        "clients-exec-all-desc": "Jika diaktifkan, skrip akan berjalan pada semua sesi yang terhubung.",
+        "clients-filter-session": "Filter sesi",
+        "clients-filter-all": "Semua sesi",
+        "settings-session-notifications": "Notifikasi sesi",
+        "settings-session-notifications-desc": "Tampilkan notifikasi saat sesi ditambahkan atau dihapus.",
+        "clients-session-added-body": "Sesi dengan PID: \"{pid}\" telah ditambahkan ke halaman Klien.",
+        "clients-session-removed-body": "Sesi dengan PID: \"{pid}\" telah dihapus dari halaman Klien."
     }
 }

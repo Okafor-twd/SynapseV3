@@ -41,6 +41,17 @@ contextBridge.exposeInMainWorld('hwAPI', {
         return () => ipcRenderer.removeListener('client:attach-status', handler);
     },
     getClientAttachStatus: () => ipcRenderer.invoke('client:get-attach-status'),
+    getSynzSessions: () => ipcRenderer.invoke('client:get-sessions'),
+    onSynzSessionAdded: (cb) => {
+        const handler = (_e, pid) => cb(pid);
+        ipcRenderer.on('client:session-added', handler);
+        return () => ipcRenderer.removeListener('client:session-added', handler);
+    },
+    onSynzSessionRemoved: (cb) => {
+        const handler = (_e, pid) => cb(pid);
+        ipcRenderer.on('client:session-removed', handler);
+        return () => ipcRenderer.removeListener('client:session-removed', handler);
+    },
 
     // Editor config files (config/editor/*.json)
     getEditorConfig: (name) => ipcRenderer.invoke('config:get-editor', name),

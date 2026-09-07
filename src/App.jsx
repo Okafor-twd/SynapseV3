@@ -8,6 +8,7 @@ import { EditorPage } from './pages/EditorPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { ThemesPage } from './pages/ThemesPage';
 import { PluginsPage } from './pages/PluginsPage';
+import { ClientsPage } from './pages/ClientsPage';
 import { DialogManager } from './components/dialogs/DialogManager';
 import { ToastContainer } from './components/toasts/ToastContainer';
 import { ProgressView } from './components/toasts/ProgressView';
@@ -40,6 +41,9 @@ function MainLayout() {
                     </div>
                     <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'plugins' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
                         <PluginsPage />
+                    </div>
+                    <div className={`page-container t-0 l-0 absolute flex h-full w-full flex-col overflow-y-auto ${activePage === 'clients' ? 'pointer-events-auto opacity-100 visible-page' : 'pointer-events-none opacity-0 hidden-page'}`}>
+                        <ClientsPage />
                     </div>
                 </div>
             </div>

@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Mở trong trình duyệt",
         "contextmenu-copy-share-link": "Sao chép liên kết chia sẻ",
         "contextmenu-open-in-folder": "Mở trong thư mục",
-        "contextmenu-set-accent": "Đặt màu nhấn"
+        "contextmenu-set-accent": "Đặt màu nhấn",
+        "page-clients": "Máy khách",
+        "clients-session-added": "Phiên đã được thêm",
+        "clients-session-removed": "Phiên đã bị xóa",
+        "clients-session-prefix": "Phiên: ",
+        "clients-no-clients": "Không có máy khách nào đang kết nối.",
+        "clients-exec-this": "Thực thi cho phiên này",
+        "clients-exec-this-desc": "Khi được bật, các tập lệnh sẽ thực thi trên phiên cụ thể này.",
+        "clients-exec-all": "Thực thi cho tất cả các phiên",
+        "clients-exec-all-desc": "Khi được bật, các tập lệnh thực thi trên tất cả các phiên đang kết nối.",
+        "clients-filter-session": "Lọc phiên",
+        "clients-filter-all": "Tất cả các phiên",
+        "settings-session-notifications": "Thông báo phiên",
+        "settings-session-notifications-desc": "Hiện thông báo khi một phiên được thêm vào hoặc bị xóa.",
+        "clients-session-added-body": "Phiên có PID: \"{pid}\" đã được thêm vào trang Máy khách.",
+        "clients-session-removed-body": "Phiên có PID: \"{pid}\" đã bị xóa khỏi trang Máy khách."
     }
 }

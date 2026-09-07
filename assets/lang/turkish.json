@@ -241,6 +241,21 @@
         "contextmenu-open-in-browser": "Tarayıcıda aç",
         "contextmenu-copy-share-link": "Paylaşım bağlantısını kopyala",
         "contextmenu-open-in-folder": "Klasörde göster",
-        "contextmenu-set-accent": "Vurgu rengini ayarla"
+        "contextmenu-set-accent": "Vurgu rengini ayarla",
+        "page-clients": "İstemciler",
+        "clients-session-added": "Oturum Eklendi",
+        "clients-session-removed": "Oturum Kaldırıldı",
+        "clients-session-prefix": "Oturum: ",
+        "clients-no-clients": "Bağlı istemci yok.",
+        "clients-exec-this": "Bu oturum için çalıştır",
+        "clients-exec-this-desc": "Etkinleştirildiğinde, betikler bu belirli oturumda çalıştırılır.",
+        "clients-exec-all": "Tüm oturumlar için çalıştır",
+        "clients-exec-all-desc": "Etkinleştirildiğinde, betikler bağlı tüm oturumlarda çalıştırılır.",
+        "clients-filter-session": "Oturumu filtrele",
+        "clients-filter-all": "Tüm oturumlar",
+        "settings-session-notifications": "Oturum bildirimleri",
+        "settings-session-notifications-desc": "Bir oturum eklendiğinde veya kaldırıldığında bildirim gösterir.",
+        "clients-session-added-body": "PID: \"{pid}\" olan oturum İstemci sayfasına eklendi.",
+        "clients-session-removed-body": "PID: \"{pid}\" olan oturum İstemci sayfasından kaldırıldı."
     }
 }

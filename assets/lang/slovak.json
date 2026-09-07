@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Otvoriť v prehliadači",
         "contextmenu-copy-share-link": "Kopírovať odkaz na zdieľanie",
         "contextmenu-open-in-folder": "Zobraziť v priečinku",
-        "contextmenu-set-accent": "Nastaviť akcent"
+        "contextmenu-set-accent": "Nastaviť akcent",
+        "page-clients": "Klienti",
+        "clients-session-added": "Relácia pridaná",
+        "clients-session-removed": "Relácia odstránená",
+        "clients-session-prefix": "Relácia: ",
+        "clients-no-clients": "Žiadni klienti nie sú pripojení.",
+        "clients-exec-this": "Vykonať pre túto reláciu",
+        "clients-exec-this-desc": "Keď je táto možnosť povolená, skripty sa vykonajú v tejto konkrétnej relácii.",
+        "clients-exec-all": "Vykonať pre všetky relácie",
+        "clients-exec-all-desc": "Keď je táto možnosť povolená, skripty sa vykonajú vo všetkých pripojených reláciách.",
+        "clients-filter-session": "Filtrovať reláciu",
+        "clients-filter-all": "Všetky relácie",
+        "settings-session-notifications": "Oznámenia o relácii",
+        "settings-session-notifications-desc": "Zobrazí oznámenie, keď je relácia pridaná alebo odstránená.",
+        "clients-session-added-body": "Relácia s PID: \"{pid}\" bola pridaná na stránku Klientov.",
+        "clients-session-removed-body": "Relácia s PID: \"{pid}\" bola odstránená zo stránky Klientov."
     }
 }

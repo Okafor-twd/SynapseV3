@@ -242,6 +242,21 @@
         "contextmenu-open-in-browser": "Deschide în browser",
         "contextmenu-copy-share-link": "Copiază linkul de partajare",
         "contextmenu-open-in-folder": "Deschide în dosar",
-        "contextmenu-set-accent": "Setați accentul"
+        "contextmenu-set-accent": "Setați accentul",
+        "page-clients": "Clienți",
+        "clients-session-added": "Sesiune adăugată",
+        "clients-session-removed": "Sesiune eliminată",
+        "clients-session-prefix": "Sesiune: ",
+        "clients-no-clients": "Niciun client conectat.",
+        "clients-exec-this": "Execută pentru această sesiune",
+        "clients-exec-this-desc": "Când este activat, scripturile vor fi executate pe această sesiune specifică.",
+        "clients-exec-all": "Execută pentru toate sesiunile",
+        "clients-exec-all-desc": "Când este activat, scripturile sunt executate pe toate sesiunile conectate.",
+        "clients-filter-session": "Filtrează sesiunea",
+        "clients-filter-all": "Toate sesiunile",
+        "settings-session-notifications": "Notificări de sesiune",
+        "settings-session-notifications-desc": "Afișează o notificare când o sesiune este adăugată sau eliminată.",
+        "clients-session-added-body": "Sesiunea cu PID-ul: \"{pid}\" a fost adăugată pe pagina Client.",
+        "clients-session-removed-body": "Sesiunea cu PID-ul: \"{pid}\" a fost eliminată de pe pagina Client."
     }
 }
