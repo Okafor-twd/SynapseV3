@@ -1,5 +1,6 @@
-1.0 VERSION RELEASE:                                          
+!!Changelog!!
 
+1.0 -
 + Added Multilanguage support.
 + LSP support.
 + Theme support.
