@@ -38,6 +38,7 @@
             "lsp/**/*",
             "scripts/**/*",
             "themes/**/*",
+            "API/**/*",
             "index.js",
             "preload.js",
             "login.html",

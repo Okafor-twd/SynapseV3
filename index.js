@@ -4,6 +4,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const crypto = require('crypto');
 const net = require('net');
+const SynzApi = require('./API');
 
 let mainWindow = null;
 
@@ -625,6 +626,7 @@ function openMainWindow() {
         mainWindow.show();
         watchScriptsDir();
         watchThemesDir();
+        updateAttachStatus();
 
         if (getSetting('show_console_at_launch', false) === true) {
             setTimeout(() => {
@@ -1034,16 +1036,80 @@ ipcMain.on('console:flush', (e) => {
     });
 });
 
+// ── Synapse Z Integration (V1 & V2 RS API) ──────────────────────────────────
+let isSynzAttached = false;
+
+function updateAttachStatus() {
+    const instances = SynzApi.SynapseZAPI2.getInstances();
+    const attached = instances.size > 0 || SynzApi.GetSynzRobloxInstances().length > 0;
+    if (attached !== isSynzAttached) {
+        isSynzAttached = attached;
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('client:attach-status', isSynzAttached);
+        }
+    }
+}
+
+SynzApi.SynapseZAPI2.onSessionAdded((session) => {
+    updateAttachStatus();
+    pushConsoleLog({
+        level: 'info',
+        text: `[Synapse Z] Attached to Roblox instance (PID: ${session.pid})`,
+        time: formatConsoleTime(),
+    });
+});
+
+SynzApi.SynapseZAPI2.onSessionRemoved((session) => {
+    updateAttachStatus();
+    pushConsoleLog({
+        level: 'warning',
+        text: `[Synapse Z] Detached from Roblox instance (PID: ${session.pid})`,
+        time: formatConsoleTime(),
+    });
+});
+
+SynzApi.SynapseZAPI2.onSessionOutput((session, outType, output) => {
+    // RS API output types: 0=print, 1=info, 2=warn, 3=error
+    let level;
+    switch (outType) {
+        case 0:  level = 'print';   break;
+        case 1:  level = 'info';    break;
+        case 2:  level = 'warning'; break;
+        case 3:  level = 'error';   break;
+        default: level = 'print';   break;
+    }
+    pushConsoleLog({
+        level,
+        text: `[PID ${session.pid}] ${output}`,
+        time: formatConsoleTime(),
+    });
+});
+
+// Automatically poll for Synapse Z instances
+SynzApi.SynapseZAPI2.startInstancesTimer(2000);
+
+ipcMain.handle('client:get-attach-status', () => {
+    const instances = SynzApi.SynapseZAPI2.getInstances();
+    if (instances.size > 0) return true;
+    return SynzApi.GetSynzRobloxInstances().length > 0;
+});
+
 // Editor
 ipcMain.on('editor:execute', (e, source) => {
-    // Stub execution — a real build would pipe this to the Synapse backend.
-    const scriptLen = String(source || '').length;
-    console.log(`[editor:execute] received ${scriptLen} bytes (stub)`);
+    const scriptText = String(source || '');
+    const scriptLen = scriptText.length;
+    console.log(`[editor:execute] executing ${scriptLen} bytes via Synapse Z API`);
+
+    // Execute via Synapse Z API (broadcasts to connected sessions & scheduler folder)
+    const result = SynzApi.SynapseZAPI2.execute(scriptText, 0);
+
     e.sender.send('editor:executed');
 
     pushConsoleLog({
-        level: 'info',
-        text: `[Execution] Script executed (${scriptLen} bytes)`,
+        level: result === 0 ? 'info' : 'error',
+        text: result === 0
+            ? `[Execution] Script executed (${scriptLen} bytes)`
+            : `[Execution] Failed: ${SynzApi.GetLatestErrorMessage()}`,
         time: formatConsoleTime(),
     });
 });

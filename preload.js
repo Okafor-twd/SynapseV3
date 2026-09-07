@@ -27,11 +27,20 @@ contextBridge.exposeInMainWorld('hwAPI', {
     loadTheme: (themeId) => ipcRenderer.invoke('theme:load', themeId),
     onThemesChanged: (cb) => ipcRenderer.on('themes:changed', () => cb()),
 
-    // Editor
+    // Editor & Execution
     execute: (source) => ipcRenderer.send('editor:execute', source),
     onExecuted: (cb) => ipcRenderer.on('editor:executed', cb),
     openFile: () => ipcRenderer.invoke('dialog:open-file'),
     saveFile: (content, existingPath) => ipcRenderer.invoke('dialog:save-file', content, existingPath),
+
+    // Synapse Z Client Attachment & Instances
+    onClientAttach: (cb) => {
+        const handler = (_e, status) => cb(status);
+        ipcRenderer.on('client:attach-status', handler);
+        ipcRenderer.invoke('client:get-attach-status').then(status => cb(status)).catch(() => {});
+        return () => ipcRenderer.removeListener('client:attach-status', handler);
+    },
+    getClientAttachStatus: () => ipcRenderer.invoke('client:get-attach-status'),
 
     // Editor config files (config/editor/*.json)
     getEditorConfig: (name) => ipcRenderer.invoke('config:get-editor', name),
