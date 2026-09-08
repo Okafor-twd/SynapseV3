@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Când este activat, scripturile vor fi executate pe această sesiune specifică.",
         "clients-exec-all": "Execută pentru toate sesiunile",
         "clients-exec-all-desc": "Când este activat, scripturile sunt executate pe toate sesiunile conectate.",
-        "clients-filter-session": "Filtrează sesiunea",
+        "clients-filter-session": "Execută sesiunea",
         "clients-filter-all": "Toate sesiunile",
         "settings-session-notifications": "Notificări de sesiune",
         "settings-session-notifications-desc": "Afișează o notificare când o sesiune este adăugată sau eliminată.",

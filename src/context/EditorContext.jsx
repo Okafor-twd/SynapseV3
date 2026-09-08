@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useApp } from './AppContext';
 import { formatLuaCode } from '../services/luaFormatter';
+import { getExecuteTargets } from '../services/executionTargetService';
 
 const EditorContext = createContext(null);
 
@@ -272,7 +273,7 @@ export function EditorProvider({ children }) {
                 if (!code && tab.content) code = tab.content;
                 if (!code) code = localStorage.getItem('synapse_setting_default_tab_content') || "print('Synapse winning!')";
                 if (!code || !code.trim()) break;
-                window.hwAPI?.execute?.(code);
+                window.hwAPI?.execute?.(code, getExecuteTargets());
                 break;
             }
             case 'format': {

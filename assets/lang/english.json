@@ -368,7 +368,7 @@
         "clients-exec-this-desc": "When enabled, scripts will execute on this specific session.",
         "clients-exec-all": "Execute for all sessions",
         "clients-exec-all-desc": "When enabled, scripts execute on all connected sessions.",
-        "clients-filter-session": "Filter session",
+        "clients-filter-session": "Execute session",
         "clients-filter-all": "All sessions",
         "settings-session-notifications": "Session notifications",
         "settings-session-notifications-desc": "Show a notification when a session is added or removed.",

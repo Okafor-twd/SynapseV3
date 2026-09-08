@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Wenn aktiviert, werden Skripte in dieser spezifischen Sitzung ausgeführt.",
         "clients-exec-all": "Für alle Sitzungen ausführen",
         "clients-exec-all-desc": "Wenn aktiviert, werden Skripte in allen verbundenen Sitzungen ausgeführt.",
-        "clients-filter-session": "Sitzung filtern",
+        "clients-filter-session": "Sitzung ausführen",
         "clients-filter-all": "Alle Sitzungen",
         "settings-session-notifications": "Sitzungsbenachrichtigungen",
         "settings-session-notifications-desc": "Zeigt eine Benachrichtigung an, wenn eine Sitzung hinzugefügt oder entfernt wird.",

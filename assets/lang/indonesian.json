@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Jika diaktifkan, skrip akan berjalan pada sesi tertentu ini.",
         "clients-exec-all": "Jalankan untuk semua sesi",
         "clients-exec-all-desc": "Jika diaktifkan, skrip akan berjalan pada semua sesi yang terhubung.",
-        "clients-filter-session": "Filter sesi",
+        "clients-filter-session": "Jalankan sesi",
         "clients-filter-all": "Semua sesi",
         "settings-session-notifications": "Notifikasi sesi",
         "settings-session-notifications-desc": "Tampilkan notifikasi saat sesi ditambahkan atau dihapus.",

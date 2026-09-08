@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Se abilitato, gli script verranno eseguiti su questa sessione specifica.",
         "clients-exec-all": "Esegui per tutte le sessioni",
         "clients-exec-all-desc": "Se abilitato, gli script vengono eseguiti su tutte le sessioni connesse.",
-        "clients-filter-session": "Filtra sessione",
+        "clients-filter-session": "Esegui sessione",
         "clients-filter-all": "Tutte le sessioni",
         "settings-session-notifications": "Notifiche di sessione",
         "settings-session-notifications-desc": "Mostra una notifica quando una sessione viene aggiunta o rimossa.",

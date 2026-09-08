@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Ha bekapcsolva, a szkriptek ezen a konkrét munkameneten futnak.",
         "clients-exec-all": "Végrehajtás az összes munkamenetre",
         "clients-exec-all-desc": "Ha bekapcsolva, a szkriptek az összes csatlakoztatott munkameneten futnak.",
-        "clients-filter-session": "Munkamenet szűrése",
+        "clients-filter-session": "Munkamenet futtatása",
         "clients-filter-all": "Összes munkamenet",
         "settings-session-notifications": "Munkamenet értesítések",
         "settings-session-notifications-desc": "Értesítést jelenít meg, amikor munkamenet kerül hozzáadásra vagy eltávolításra.",

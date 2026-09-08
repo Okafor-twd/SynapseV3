@@ -14,6 +14,8 @@
     const logs = [];
     let autoscroll = true;
     let searchQuery = '';
+    let sessionPids = [];      // live session PIDs (strings)
+    let selectedSession = 'all'; // 'all' | PID string
 
     const contentsEl = document.getElementById('console-contents');
     const searchInput = document.getElementById('console-search-input');
@@ -36,6 +38,38 @@
         if (l === 'err') return 'error';
         if (l === 'log' || l === 'output') return 'print';
         return l;
+    }
+
+    // ── Session filter helpers ────────────────────────────────────────────────
+    const PID_PREFIX_RE = /^\[PID \d+\] /;
+
+    function logPid(log) {
+        if (log && log.pid !== undefined && log.pid !== null) return String(log.pid);
+        const m = /^\[PID (\d+)\]/.exec(String(log && log.text || ''));
+        return m ? m[1] : null;
+    }
+
+    function matchesSessionFilter(log) {
+        if (selectedSession === 'all') return true;
+        return logPid(log) === selectedSession;
+    }
+
+    // When a specific session is selected its logs lose the "[PID x] " prefix
+    function displayText(log) {
+        const text = String((log && log.text) || '');
+        if (selectedSession === 'all') return text;
+        return text.replace(PID_PREFIX_RE, '');
+    }
+
+    function isVisible(log) {
+        if (!matchesSessionFilter(log)) return false;
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return true;
+        return displayText(log).toLowerCase().includes(q) || String(log.time || '').toLowerCase().includes(q);
+    }
+
+    function getVisibleLogs() {
+        return logs.filter(isVisible);
     }
 
     // ── Window Controls ───────────────────────────────────────────────────────
@@ -110,7 +144,7 @@
 
         const textSpan = document.createElement('span');
         textSpan.className = 'text';
-        textSpan.textContent = log.text || '';
+        textSpan.textContent = displayText(log);
         line.appendChild(textSpan);
 
         return line;
@@ -121,12 +155,7 @@
         if (!contentsEl) return;
         contentsEl.innerHTML = '';
 
-        const q = searchQuery.trim().toLowerCase();
-        const filtered = q
-            ? logs.filter(l => (l.text || '').toLowerCase().includes(q) || (l.time || '').toLowerCase().includes(q))
-            : logs;
-
-        filtered.forEach(log => {
+        getVisibleLogs().forEach(log => {
             contentsEl.appendChild(createLineElement(log));
         });
 
@@ -135,13 +164,26 @@
         }
     }
 
-    function appendLog(log) {
+    function normalizeLog(log) {
         if (!log || typeof log !== 'object') {
             log = { level: 'print', text: String(log), time: formatTime() };
         }
         if (!log.time) log.time = formatTime();
         log.level = normalizeLevel(log.level);
-        logs.push(log);
+        return log;
+    }
+
+    function appendLog(log) {
+        appendLogs([log], true);
+    }
+
+    // Bulk append (log history replay): one render for the whole batch —
+    // per-message full re-renders froze the window with a large buffer.
+    function appendLogs(list, incremental) {
+        const incoming = (Array.isArray(list) ? list : [list]).map(normalizeLog);
+        if (!incoming.length) return;
+
+        logs.push(...incoming);
 
         // Enforce maximum log preservation limit from setting
         const maxPreserve = parseInt(localStorage.getItem('synapse_setting_max_log_count') || '720', 10);
@@ -151,24 +193,24 @@
             return;
         }
 
-        const q = searchQuery.trim().toLowerCase();
-        if (!q || (log.text || '').toLowerCase().includes(q) || (log.time || '').toLowerCase().includes(q)) {
-            contentsEl.appendChild(createLineElement(log));
+        if (incremental) {
+            const log = incoming[incoming.length - 1];
+            if (isVisible(log)) {
+                contentsEl.appendChild(createLineElement(log));
 
-            if (autoscroll) {
-                contentsEl.scrollTop = contentsEl.scrollHeight;
+                if (autoscroll) {
+                    contentsEl.scrollTop = contentsEl.scrollHeight;
+                }
             }
+        } else {
+            renderLogs();
         }
     }
 
     // ── Actions ───────────────────────────────────────────────────────────────
     if (copyBtn) {
         copyBtn.addEventListener('click', async () => {
-            const q = searchQuery.trim().toLowerCase();
-            const filtered = q
-                ? logs.filter(l => (l.text || '').toLowerCase().includes(q))
-                : logs;
-            const textToCopy = filtered.map(l => `[${l.time}] ${l.text}`).join('\n');
+            const textToCopy = getVisibleLogs().map(l => `[${l.time}] ${displayText(l)}`).join('\n');
             if (!textToCopy) return;
 
             try {
@@ -182,7 +224,17 @@
 
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
-            logs.length = 0;
+            if (selectedSession === 'all') {
+                // "All Sections": wipe everything, including the main-process buffer
+                logs.length = 0;
+                window.hwAPI?.clearConsoleLogs?.();
+            } else {
+                // Specific session: clear only that session's logs
+                for (let i = logs.length - 1; i >= 0; i--) {
+                    if (logPid(logs[i]) === selectedSession) logs.splice(i, 1);
+                }
+                window.hwAPI?.clearConsoleLogs?.(selectedSession);
+            }
             renderLogs();
         });
     }
@@ -282,11 +334,111 @@
         syncTheme();
     });
 
+    // ── Session Filter Dropdown ───────────────────────────────────────────────
+    const sessionSelector = document.getElementById('console-session-selector');
+    const sessionListEl = document.getElementById('console-session-list');
+    const sessionLabel = document.getElementById('console-session-selected-label');
+    const sessionChevron = document.getElementById('console-session-chevron');
+    let sessionDropdownOpen = false;
+
+    function updateSessionLabel() {
+        if (!sessionLabel) return;
+        sessionLabel.textContent = selectedSession === 'all' ? 'All Sections' : `PID ${selectedSession}`;
+    }
+
+    function setSessionDropdownOpen(open) {
+        sessionDropdownOpen = !!open;
+        if (sessionListEl) sessionListEl.classList.toggle('open', sessionDropdownOpen);
+        if (sessionChevron) sessionChevron.classList.toggle('rotate-180', sessionDropdownOpen);
+    }
+
+    function renderSessionOptions() {
+        if (!sessionListEl) return;
+        sessionListEl.innerHTML = '';
+
+        const options = [
+            { id: 'all', label: 'All Sections' },
+            ...sessionPids.map(p => ({ id: p, label: `PID ${p}` })),
+        ];
+
+        if (sessionPids.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'entry console-session-empty';
+            empty.textContent = 'No sessions connected';
+            empty.style.opacity = '0.4';
+            empty.style.cursor = 'default';
+            sessionListEl.appendChild(empty);
+        }
+
+        for (const opt of options) {
+            const item = document.createElement('div');
+            item.className = 'entry' + (selectedSession === opt.id ? ' highlight' : '');
+            item.textContent = opt.label;
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectedSession = opt.id;
+                setSessionDropdownOpen(false);
+                updateSessionLabel();
+                renderLogs();
+            });
+            sessionListEl.appendChild(item);
+        }
+
+        updateSessionLabel();
+    }
+
+    if (sessionSelector) {
+        sessionSelector.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setSessionDropdownOpen(!sessionDropdownOpen);
+        });
+    }
+
+    // Close the dropdown on any outside click
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('console-session-dropdown');
+        if (sessionDropdownOpen && dropdown && !dropdown.contains(e.target)) {
+            setSessionDropdownOpen(false);
+        }
+    });
+
+    function setSessionPids(pids) {
+        sessionPids = (Array.isArray(pids) ? pids : []).map(String).filter(p => p !== '');
+        // Selected session vanished → back to All Sections
+        if (selectedSession !== 'all' && !sessionPids.includes(selectedSession)) {
+            selectedSession = 'all';
+            renderLogs();
+        }
+        renderSessionOptions();
+    }
+
+    // Live session list (initial fetch + add/remove events)
+    window.hwAPI?.getSynzSessions?.().then(setSessionPids).catch(() => {});
+    window.hwAPI?.onSynzSessionAdded?.((pid) => {
+        const key = String(pid);
+        if (key && !sessionPids.includes(key)) sessionPids.push(key);
+        renderSessionOptions();
+    });
+    window.hwAPI?.onSynzSessionRemoved?.((pid) => {
+        const key = String(pid);
+        sessionPids = sessionPids.filter(p => p !== key);
+        if (selectedSession === key) {
+            selectedSession = 'all';
+            renderLogs();
+        }
+        renderSessionOptions();
+    });
+
     // ── Incoming Logs IPC Listener ────────────────────────────────────────────
     window.hwAPI?.onConsoleMessage?.((msg) => {
         appendLog(msg);
     });
 
-    // Flush any logs that were dispatched before opening
+    // Log history replay (single batched message)
+    window.hwAPI?.onConsoleMessageBatch?.((msgs) => {
+        appendLogs(msgs, false);
+    });
+
+    // Request logs that were dispatched before this window opened
     window.hwAPI?.flushConsoleLogs?.();
 })();

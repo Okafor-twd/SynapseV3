@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Keď je táto možnosť povolená, skripty sa vykonajú v tejto konkrétnej relácii.",
         "clients-exec-all": "Vykonať pre všetky relácie",
         "clients-exec-all-desc": "Keď je táto možnosť povolená, skripty sa vykonajú vo všetkých pripojených reláciách.",
-        "clients-filter-session": "Filtrovať reláciu",
+        "clients-filter-session": "Spustiť reláciu",
         "clients-filter-all": "Všetky relácie",
         "settings-session-notifications": "Oznámenia o relácii",
         "settings-session-notifications-desc": "Zobrazí oznámenie, keď je relácia pridaná alebo odstránená.",

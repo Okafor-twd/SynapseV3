@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "เมื่อเปิดใช้งาน สคริปต์จะดำเนินการบนเซสชันนี้โดยเฉพาะ",
         "clients-exec-all": "ดำเนินการสำหรับทุกเซสชัน",
         "clients-exec-all-desc": "เมื่อเปิดใช้งาน สคริปต์จะดำเนินการบนทุกเซสชันที่เชื่อมต่ออยู่",
-        "clients-filter-session": "กรองเซสชัน",
+        "clients-filter-session": "เรียกใช้เซสชัน",
         "clients-filter-all": "ทุกเซสชัน",
         "settings-session-notifications": "การแจ้งเตือนเซสชัน",
         "settings-session-notifications-desc": "แสดงการแจ้งเตือนเมื่อมีการเพิ่มหรือลบเซสชัน",

@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Po włączeniu skrypty będą wykonywane w tej konkretnej sesji.",
         "clients-exec-all": "Wykonaj dla wszystkich sesji",
         "clients-exec-all-desc": "Po włączeniu skrypty będą wykonywane we wszystkich połączonych sesjach.",
-        "clients-filter-session": "Filtruj sesję",
+        "clients-filter-session": "Uruchom sesję",
         "clients-filter-all": "Wszystkie sesje",
         "settings-session-notifications": "Powiadomienia o sesjach",
         "settings-session-notifications-desc": "Wyświetla powiadomienie, gdy sesja zostaje dodana lub usunięta.",

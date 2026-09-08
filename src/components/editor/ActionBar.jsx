@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useEditor } from '../../context/EditorContext';
 import { useApp } from '../../context/AppContext';
 import { i18n } from '../../services/i18nService';
+import { getExecuteTargets } from '../../services/executionTargetService';
 
 export function ActionBar() {
     const { activeTab, updateTabContent, saveActiveScript, openFileInEditor, monacoEditorRef } = useEditor();
@@ -43,7 +44,7 @@ export function ActionBar() {
             code = localStorage.getItem('synapse_setting_default_tab_content') || "print('Synapse winning!')";
         }
         if (!code || !code.trim()) return;
-        window.hwAPI?.execute?.(code);
+        window.hwAPI?.execute?.(code, getExecuteTargets());
     };
 
     const handleClear = async () => {
@@ -76,7 +77,7 @@ export function ActionBar() {
         const file = await openFn?.();
         if (file && file.content && file.content.trim()) {
             window.hwAPI?.openConsole?.();
-            window.hwAPI?.execute?.(file.content);
+            window.hwAPI?.execute?.(file.content, getExecuteTargets());
         }
     };
 

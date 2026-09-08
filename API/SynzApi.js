@@ -378,21 +378,81 @@ function findRobloxExePaths() {
     return paths;
 }
 
+const synzPathSignatureCache = new Map();
+
 /**
  * Checks if an executable has the Synapse Z binary signature (".grh" within the first 0x1000 bytes).
  */
 function isSynzPath(filePath) {
     if (!filePath || !fs.existsSync(filePath)) return false;
+    if (synzPathSignatureCache.has(filePath)) return synzPathSignatureCache.get(filePath);
+    let result = false;
     try {
         const fd = fs.openSync(filePath, "r");
         const buf = Buffer.alloc(0x1000);
         const bytesRead = fs.readSync(fd, buf, 0, 0x1000, 0);
         fs.closeSync(fd);
-        const slice = buf.subarray(0, bytesRead);
-        return slice.includes(".grh");
+        result = buf.subarray(0, bytesRead).includes(".grh");
     } catch (_) {
-        return false;
+        result = false;
     }
+    synzPathSignatureCache.set(filePath, result);
+    return result;
+}
+
+// Async process-list cache: spawning tasklist synchronously in the main
+// process stalls the whole app (~100-300ms) on every poll, so the scan runs in
+// the background and sync callers read the last snapshot instead.
+let processCache = [];
+let processScanBusy = false;
+let processScanLastAt = 0;
+const PROCESS_SCAN_MIN_INTERVAL = 1500;
+
+function parseTasklistOutput(stdout) {
+    const results = [];
+    const lines = String(stdout).split(/\r?\n/);
+    const knownPaths = findRobloxExePaths();
+    const defaultPath = knownPaths.length > 0 ? knownPaths[0] : "";
+
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("INFO:")) continue;
+        const match = trimmed.match(/^"([^"]+)","(\d+)"/);
+        if (match) {
+            const name = match[1];
+            const pid = parseInt(match[2], 10);
+            if (name.toLowerCase().includes("robloxplayerbeta") && !isNaN(pid)) {
+                results.push({
+                    pid,
+                    name,
+                    path: defaultPath,
+                });
+            }
+        }
+    }
+    return results;
+}
+
+function refreshRobloxProcessesAsync() {
+    if (SynzNativeApi && typeof SynzNativeApi.GetRobloxProcesses === "function") return;
+    if (processScanBusy) return;
+    const now = Date.now();
+    if (now - processScanLastAt < PROCESS_SCAN_MIN_INTERVAL) return;
+    processScanBusy = true;
+    child_process.execFile(
+        "tasklist",
+        ["/fi", "imagename eq RobloxPlayerBeta.exe", "/fo", "csv", "/nh"],
+        { encoding: "utf8", windowsHide: true },
+        (err, stdout) => {
+            processScanBusy = false;
+            processScanLastAt = Date.now();
+            if (!err && typeof stdout === "string") {
+                try {
+                    processCache = parseTasklistOutput(stdout);
+                } catch (_) {}
+            }
+        }
+    );
 }
 
 /**
@@ -407,39 +467,9 @@ function GetRobloxProcesses() {
         } catch (_) {}
     }
 
-    // Pure Node fallback: use tasklist on Windows
-    try {
-        const stdout = child_process.execFileSync("tasklist", [
-            "/fi", "imagename eq RobloxPlayerBeta.exe",
-            "/fo", "csv",
-            "/nh"
-        ], { encoding: "utf8", windowsHide: true });
-
-        const results = [];
-        const lines = stdout.split(/\r?\n/);
-        const knownPaths = findRobloxExePaths();
-        const defaultPath = knownPaths.length > 0 ? knownPaths[0] : "";
-
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith("INFO:")) continue;
-            const match = trimmed.match(/^"([^"]+)","(\d+)"/);
-            if (match) {
-                const name = match[1];
-                const pid = parseInt(match[2], 10);
-                if (name.toLowerCase().includes("robloxplayerbeta") && !isNaN(pid)) {
-                    results.push({
-                        pid,
-                        name,
-                        path: defaultPath,
-                    });
-                }
-            }
-        }
-        return results;
-    } catch (_) {
-        return [];
-    }
+    // Pure Node fallback: serve the cached snapshot and refresh asynchronously
+    refreshRobloxProcessesAsync();
+    return processCache;
 }
 
 /**
@@ -620,13 +650,19 @@ class SynapseZAPI2 {
             const session = new SynapseSession(pid);
             SESSIONS.set(pid, session);
 
-            const synzSettings = readSynzSettings();
-            if (synzSettings.redirect_output || synzSettings.redirect_errors) {
-                startConsoleReader(pid);
-            }
-
             for (const cb of SESSION_ADDED_EVENTS) {
                 try { cb(session); } catch (_) {}
+            }
+        }
+
+        // Keep console readers aligned with the redirection setting for every
+        // live session. startForSession() is a no-op for healthy readers and
+        // recreates ones whose process died (e.g. spawned before the game's
+        // pipe server was listening right after attach).
+        const synzSettings = readSynzSettings();
+        if (synzSettings.redirect_output || synzSettings.redirect_errors) {
+            for (const pid of SESSIONS.keys()) {
+                startConsoleReader(pid);
             }
         }
     }
@@ -672,7 +708,7 @@ class SynapseZAPI2 {
     }
 
     static triggerSessionOutput(pid, outType, output) {
-        const session = SESSIONS.get(Number(pid));
+        const session = SESSIONS.get(Number(pid)) || { pid: Number(pid) };
         for (const cb of SESSION_OUTPUT_EVENTS) {
             try { cb(session, outType, output); } catch (_) {}
         }

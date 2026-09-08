@@ -251,7 +251,7 @@
         "clients-exec-this-desc": "Etkinleştirildiğinde, betikler bu belirli oturumda çalıştırılır.",
         "clients-exec-all": "Tüm oturumlar için çalıştır",
         "clients-exec-all-desc": "Etkinleştirildiğinde, betikler bağlı tüm oturumlarda çalıştırılır.",
-        "clients-filter-session": "Oturumu filtrele",
+        "clients-filter-session": "Oturumu çalıştır",
         "clients-filter-all": "Tüm oturumlar",
         "settings-session-notifications": "Oturum bildirimleri",
         "settings-session-notifications-desc": "Bir oturum eklendiğinde veya kaldırıldığında bildirim gösterir.",

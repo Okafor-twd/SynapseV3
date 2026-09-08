@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "Pagnaka-enable, ang mga script ay isasagawa sa partikular na session na ito.",
         "clients-exec-all": "I-execute para sa lahat ng sessions",
         "clients-exec-all-desc": "Pagnaka-enable, ang mga script ay isasagawa sa lahat ng nakakonektang sessions.",
-        "clients-filter-session": "I-filter ang session",
+        "clients-filter-session": "I-execute ang session",
         "clients-filter-all": "Lahat ng sessions",
         "settings-session-notifications": "Mga notification ng session",
         "settings-session-notifications-desc": "Magpapakita ng notification kapag may naidagdag o natanggal na session.",

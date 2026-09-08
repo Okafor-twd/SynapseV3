@@ -41,6 +41,17 @@
                     <button id="btn-console-clear" class="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-pointer">
                         <iconify-icon icon="fluent:eraser-20-filled" class="flex items-center justify-center"></iconify-icon> Clear
                     </button>
+                    <!-- Session filter: All Sections (default) + one entry per live PID -->
+                    <div id="console-session-dropdown" class="hw-dropdown console-session-dropdown relative flex flex-col flex-shrink-0">
+                        <div id="console-session-selector" class="selector flex items-center gap-1 rounded-md px-2 py-1 cursor-pointer select-none">
+                            <iconify-icon icon="fluent:apps-list-detail-20-filled" class="flex items-center justify-center text-sm opacity-70"></iconify-icon>
+                            <span id="console-session-selected-label" class="console-session-label text-xs">All Sections</span>
+                            <iconify-icon id="console-session-chevron" icon="heroicons:chevron-down" class="flex items-center justify-center text-xs transition-transform"></iconify-icon>
+                        </div>
+                        <div id="console-session-list" class="list console-session-list flex-col absolute rounded-md z-50">
+                            <div class="console-session-empty entry text-xs">No sessions connected</div>
+                        </div>
+                    </div>
                     <!--
                     <button id="btn-console-test" class="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-pointer" title="Send test output logs (print, info, warning, error)">
                         <iconify-icon icon="fluent:beaker-20-filled" class="flex items-center justify-center"></iconify-icon> Test

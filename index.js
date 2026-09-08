@@ -827,21 +827,15 @@ function openConsoleWindow() {
     // Show immediately so a second-window paint bug cannot leave it hidden.
     try { consoleWindow.show(); } catch (_) {}
 
-    let hasFlushedLogs = false;
+    // Log history is replayed by the renderer via console:flush (one batched
+    // IPC message) — replaying per-message from here duplicated every line and
+    // froze the window on open.
     const revealConsoleWindow = () => {
         if (!consoleWindow || consoleWindow.isDestroyed()) return;
         if (consoleState.maximized && !consoleWindow.isMaximized()) {
             consoleWindow.maximize();
         }
         bringConsoleToFront();
-        if (!hasFlushedLogs) {
-            hasFlushedLogs = true;
-            consoleLogBuffer.forEach(msg => {
-                try {
-                    consoleWindow.webContents.send('console:message', msg);
-                } catch (_) {}
-            });
-        }
     };
 
     consoleWindow.once('ready-to-show', revealConsoleWindow);
@@ -1029,11 +1023,34 @@ ipcMain.on('console:log', (_e, msg) => {
 });
 
 ipcMain.on('console:flush', (e) => {
-    consoleLogBuffer.forEach(msg => {
-        try {
-            e.sender.send('console:message', msg);
-        } catch (_) {}
-    });
+    // One batched message: hundreds of individual IPC messages + per-message
+    // DOM renders froze the console window when opening with a full buffer.
+    try {
+        e.sender.send('console:message-batch', consoleLogBuffer.slice());
+    } catch (_) {}
+});
+
+// Clear the main-process log buffer: whole buffer, or just one session's logs
+// when a PID is given (matches both the structured pid field and the legacy
+// "[PID x] ..." / "(PID: x)" text prefixes of already-buffered messages)
+ipcMain.on('console:clear', (_e, pid) => {
+    const hasPid = pid !== undefined && pid !== null && pid !== '';
+    if (!hasPid) {
+        consoleLogBuffer.length = 0;
+        return;
+    }
+    const numPid = Number(pid);
+    if (!Number.isFinite(numPid)) return;
+    for (let i = consoleLogBuffer.length - 1; i >= 0; i--) {
+        const m = consoleLogBuffer[i];
+        if (!m) continue;
+        if (m.pid !== undefined && m.pid !== null && Number(m.pid) === numPid) {
+            consoleLogBuffer.splice(i, 1);
+        } else if (typeof m.text === 'string' &&
+            (m.text.startsWith(`[PID ${numPid}]`) || m.text.includes(`(PID: ${numPid})`))) {
+            consoleLogBuffer.splice(i, 1);
+        }
+    }
 });
 
 // ── Synapse Z Integration (V1 & V2 RS API) ──────────────────────────────────
@@ -1042,6 +1059,12 @@ let isSynzAttached = false;
 function sendToRenderer(channel, ...args) {
     if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(channel, ...args);
+    }
+    // The console window listens to session events too (PID dropdown)
+    if (consoleWindow && !consoleWindow.isDestroyed() && consoleWindow.webContents) {
+        try {
+            consoleWindow.webContents.send(channel, ...args);
+        } catch (_) {}
     }
 }
 
@@ -1070,11 +1093,12 @@ SynzApi.SynapseZAPI2.onSessionAdded((session) => {
     updateAttachStatus();
     sendToRenderer('client:session-added', session.pid);
 
-    pushConsoleLog({
+    /*pushConsoleLog({
         level: 'info',
+        pid: Number(session.pid),
         text: `[Synapse Z] Attached to Roblox instance (PID: ${session.pid})`,
         time: formatConsoleTime(),
-    });
+    });*/
 
     // HW.addMessage notification (respects session_notifications setting)
     if (isSessionNotificationsEnabled()) {
@@ -1103,11 +1127,12 @@ SynzApi.SynapseZAPI2.onSessionRemoved((session) => {
     updateAttachStatus();
     sendToRenderer('client:session-removed', session.pid);
 
-    pushConsoleLog({
+    /*pushConsoleLog({
         level: 'warning',
+        pid: Number(session.pid),
         text: `[Synapse Z] Detached from Roblox instance (PID: ${session.pid})`,
         time: formatConsoleTime(),
-    });
+    });*/
 
     // HW.addMessage notification (respects session_notifications setting)
     if (isSessionNotificationsEnabled()) {
@@ -1142,9 +1167,11 @@ SynzApi.SynapseZAPI2.onSessionOutput((session, outType, output) => {
         case 3:  level = 'error';   break;
         default: level = 'print';   break;
     }
+    const pid = session && session.pid ? session.pid : '?';
     pushConsoleLog({
         level,
-        text: `[PID ${session.pid}] ${output}`,
+        pid: Number(pid) || undefined,
+        text: `[PID ${pid}] ${output}`,
         time: formatConsoleTime(),
     });
 });
@@ -1174,27 +1201,58 @@ ipcMain.handle('synz:set-config', (_e, key, val) => {
 });
 
 // Editor
-ipcMain.on('editor:execute', (e, source) => {
+ipcMain.on('editor:execute', (e, source, targets) => {
     const scriptText = String(source || '').trim();
     if (!scriptText) {
         console.log('[editor:execute] ignoring blank script');
         return;
     }
     const scriptLen = scriptText.length;
-    console.log(`[editor:execute] executing ${scriptLen} bytes via Synapse Z API`);
 
-    // Execute via Synapse Z API (broadcasts to connected sessions & scheduler folder)
+    if (Array.isArray(targets)) {
+        // Targeted execution (Clients page controls): one scheduler file per PID
+        if (targets.length === 0) {
+            /*pushConsoleLog({
+                level: 'info',
+                text: '[Execution] Skipped: no target session selected (see Clients page).',
+                time: formatConsoleTime(),
+            });*/
+            e.sender.send('editor:executed');
+            return;
+        }
+
+        const live = new Set(SynzApi.SynapseZAPI2.getInstances().keys());
+        let executed = 0;
+        for (const target of targets) {
+            const pid = Number(target);
+            if (!pid || !live.has(pid)) continue;
+            if (SynzApi.SynapseZAPI2.execute(scriptText, pid) === 0) executed++;
+        }
+
+        /*pushConsoleLog({
+            level: executed > 0 ? 'info' : 'warning',
+            text: executed > 0
+                ? `[Execution] Script executed on ${executed} session${executed === 1 ? '' : 's'} (${scriptLen} bytes)`
+                : `[Execution] Skipped: none of the selected sessions (${targets.join(', ')}) are connected.`,
+            time: formatConsoleTime(),
+        });*/
+
+        e.sender.send('editor:executed');
+        return;
+    }
+
+    // Legacy broadcast via Synapse Z API (all connected sessions)
     const result = SynzApi.SynapseZAPI2.execute(scriptText, 0);
 
     e.sender.send('editor:executed');
 
-    pushConsoleLog({
+    /*pushConsoleLog({
         level: result === 0 ? 'info' : 'error',
         text: result === 0
             ? `[Execution] Script executed (${scriptLen} bytes)`
             : `[Execution] Failed: ${SynzApi.GetLatestErrorMessage()}`,
         time: formatConsoleTime(),
-    });
+    });*/
 });
 
 // File open/save dialogs

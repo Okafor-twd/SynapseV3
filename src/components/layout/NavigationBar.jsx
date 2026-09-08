@@ -7,7 +7,7 @@ const NAV_ITEMS = [
     { id: 'settings', navKey: 'page-settings', defaultLabel: 'Settings', icon: 'fluent:settings-20-filled', order: 1 },
     { id: 'themes', navKey: 'page-customization', defaultLabel: 'Themes', icon: 'fluent:paint-brush-20-filled', order: 2 },
     { id: 'plugins', navKey: 'page-powertools', defaultLabel: 'Plugins', icon: 'fluent:puzzle-piece-20-filled', order: 3 },
-    { id: 'clients', navKey: 'page-clients', defaultLabel: 'Clients', icon: 'fluent:desktop-20-filled', order: 4 },
+    { id: 'clients', navKey: 'page-clients', defaultLabel: 'Clients', icon: 'fluent:apps-list-detail-20-filled', order: 4 },
 ];
 
 export function NavigationBar() {

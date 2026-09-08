@@ -252,7 +252,7 @@
         "clients-exec-this-desc": "사용 설정 시, 스크립트는 이 특정 세션에서 실행됩니다.",
         "clients-exec-all": "모든 세션에서 실행",
         "clients-exec-all-desc": "사용 설정 시, 스크립트는 연결된 모든 세션에서 실행됩니다.",
-        "clients-filter-session": "세션 필터",
+        "clients-filter-session": "세션 실행",
         "clients-filter-all": "모든 세션",
         "settings-session-notifications": "세션 알림",
         "settings-session-notifications-desc": "세션이 추가되거나 제거될 때 알림을 표시합니다.",

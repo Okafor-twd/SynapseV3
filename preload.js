@@ -28,7 +28,8 @@ contextBridge.exposeInMainWorld('hwAPI', {
     onThemesChanged: (cb) => ipcRenderer.on('themes:changed', () => cb()),
 
     // Editor & Execution
-    execute: (source) => ipcRenderer.send('editor:execute', source),
+    // targets: array of PID strings (from the Clients page) or undefined = all sessions
+    execute: (source, targets) => ipcRenderer.send('editor:execute', source, targets),
     onExecuted: (cb) => ipcRenderer.on('editor:executed', cb),
     openFile: () => ipcRenderer.invoke('dialog:open-file'),
     openFileDialog: () => ipcRenderer.invoke('dialog:open-file'),
@@ -72,8 +73,11 @@ contextBridge.exposeInMainWorld('hwAPI', {
     // Console window
     openConsole: () => ipcRenderer.invoke('console:open'),
     onConsoleMessage: (cb) => ipcRenderer.on('console:message', (_e, msg) => cb(msg)),
+    onConsoleMessageBatch: (cb) => ipcRenderer.on('console:message-batch', (_e, msgs) => cb(msgs)),
     sendConsoleLog: (msg) => ipcRenderer.send('console:log', msg),
     flushConsoleLogs: () => ipcRenderer.send('console:flush'),
+    // pid omitted = clear the whole main-process log buffer; given = clear only that session's logs
+    clearConsoleLogs: (pid) => ipcRenderer.send('console:clear', pid),
 
     // Lua Language Server bridge (lsp-ws-proxy WebSocket)
     getLspWsInfo: () => ipcRenderer.invoke('lsp:get-ws-info'),
