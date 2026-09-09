@@ -37,7 +37,13 @@ export function BookmarksList({ searchQuery = '' }) {
             const content = await fetchScript(uri);
             openFileInEditor(name, content, { bookmarkUri: uri, isBookmark: true });
         } catch (e) {
-            window.HWToast?.error?.('Failed to load bookmark', e.message);
+            window.HW.addMessage({
+               header: 'Bookmarks',
+                desc: "Failed to load bookmark: " + e.message,
+                state: 'failure',
+                icon: 'fluent:warning-20-filled',
+                autoDismiss: 4000,
+            });
         }
     };
 
@@ -98,7 +104,13 @@ export function BookmarksList({ searchQuery = '' }) {
                     const content = await fetchScript(uri);
                     window.hwAPI?.execute?.(content);
                 } catch (e) {
-                    window.HWToast?.error?.('Execution failed', e.message);
+                window.HW.addMessage({
+                    header: 'Execute',
+                    desc: "Failed to execute: "+ e.message,
+                    state: 'failure',
+                    icon: 'fluent:warning-20-filled',
+                    autoDismiss: 4000,
+                });
                 }
                 break;
             }

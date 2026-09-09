@@ -70,7 +70,13 @@ export function Sidebar() {
         const next = [...bookmarks, { name: finalName, uri: cleanUrl }];
         await window.hwAPI?.setSetting?.('bookmarks', next);
         localStorage.setItem('synapse_bookmarks', JSON.stringify(next));
-        window.HWToast?.info?.('Added bookmark: ' + finalName);
+        window.HW.addMessage({
+            header: 'Bookmarks',
+            desc: "Bookmark Added: "+ finalName,
+            state: 'success',
+            icon: 'fluent:checkmark-20-filled',
+            autoDismiss: 4000,
+        });
     };
 
     return (
