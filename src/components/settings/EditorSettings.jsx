@@ -11,7 +11,6 @@ export function EditorSettings() {
 
     const handleSaveDefaultContent = () => {
         updateSetting('default_tab_content', defaultContent);
-        window.HWToast?.info?.('Saved default tab content');
     };
 
     return (
