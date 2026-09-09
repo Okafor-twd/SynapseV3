@@ -270,8 +270,9 @@ function compileCustomThemeScss(themeDir, themeId) {
             return `#application {\n${rules}\n}`;
         });
 
-        // Propagate application background to layout containers and settings pages
-        css = css.replace(/(^|[\s,{])#application,\s*\.page-container,\s*\.editor-page,\s*\.editor-view(?=[\s,{])/g, '$1#application, $1.page-container, $1.editor-page, $1.editor-view, $1.main-container, $1#content-area, $1#settings-pages');
+        // Propagate application background to the legacy layout containers.
+        // Settings pages manage their own surface and must not be added here.
+        css = css.replace(/(^|[\s,{])#application,\s*\.page-container,\s*\.editor-page,\s*\.editor-view(?=[\s,{])/g, '$1#application, $1.page-container, $1.editor-page, $1.editor-view, $1.main-container, $1#content-area');
 
         // Ensure custom sidebar border declarations (e.g. border-left: 1px solid #ffc86a) have !important
         css = css.replace(/(\.sidebar\s*\{[^}]*?border-(?:left|right)\s*:\s*[^;!]+)(;|\})/g, '$1 !important$2');
